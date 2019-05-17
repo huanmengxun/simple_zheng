@@ -6,10 +6,21 @@ import java.io.IOException;
 import java.util.Date;
 
 import com.zheng.utils.common.TimeCommon;
+/**
+ * 
+ * 功能描述：
+ * 文件相关方法类
+ * @Package: com.zheng.utils.file 
+ * @author: zheng  
+ * @date: 2019年5月17日 下午2:45:14
+ */
 public class FileUtils {
 	
 	/**
+	 * 功能描述：
 	 * 提供原路径，以及更换名对应的正则表达式修改该路径下的文件名
+	 * @author: zheng  
+	 * @date: 2019年5月17日 下午2:47:18 
 	 * @param filePath
 	 * @param orginStr
 	 * @param replaceStr

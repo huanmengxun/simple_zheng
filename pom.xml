@@ -2,26 +2,62 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.lazy.video</groupId>
-	<artifactId>FirstMake</artifactId>
+	<groupId>com.zheng.simple</groupId>
+	<artifactId>simple_zheng</artifactId>
+	<description>将一些简单，但很少被拿去做的功能提取出来方便实用</description>
+	<!--1表示大版本号，0表示小版本号， SNAPSHOT：快照，表示该版本正在开发中 release：稳定版本 beta：公测版 alpha：内部测试版 
+		GA：正式发布版 -->
 	<version>0.0.1-SNAPSHOT</version>
+	<!--maven项目的打包方式，默认为jar，可供选择的有war、zip、pom -->
+	<!-- 该项目位于本地运行 -->
+	<packaging>jar</packaging>
+	<!-- 开发人员 -->
+	<developers>
+		<developer>
+			zheng
+		</developer>
+	</developers>
+	<!-- 项目版本信息 -->
+	<properties>
+		<!-- Alibaba数据库连接池 -->
+		<druid.version>1.1.16</druid.version>
+		<!-- logback简化model工具jar -->
+		<logback.version>1.1.2</logback.version>
+	</properties>
 	<dependencies>
+		<!-- 数据库连接 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>${druid.version}</version>
+		</dependency>
+		<!-- mysql链接 -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.16</version>
+		</dependency>
+
 		<dependency>
 			<groupId>uk.co.caprica</groupId>
 			<artifactId>vlcj</artifactId>
 			<version>3.11.0</version>
 		</dependency>
+
+
+		<!-- model样式上面的简化 ,需要编译器执行对应jar包在编译器上面安装对应功能 -->
 		<dependencies>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.1.2</version>
+				<version>${logback.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-core</artifactId>
-				<version>1.1.2</version>
+				<version>${logback.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencies>
+	
 </project>
