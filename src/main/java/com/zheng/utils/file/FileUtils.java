@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-import com.zheng.utils.common.TimeCommon;
+import com.zheng.utils.common.Constants;
 /**
  * 
  * 功能描述：
@@ -40,7 +40,7 @@ public class FileUtils {
 			if(f.isDirectory()) {
 				for(File subF:f.listFiles()) {
 					String newName=subF.getName().replaceAll(orginStr, replaceStr);
-					fw.write(TimeCommon.TIMESDF.format(new Date())+"-oldName:"+subF.getName()+"-newName:"+newName+"\r\n");
+					fw.write(Constants.TimeConstant.TIMESDF.format(new Date())+"-oldName:"+subF.getName()+"-newName:"+newName+"\r\n");
 					subF.renameTo(new File(subF.getParent()+File.separator+newName));
 					try {
 						Thread.sleep(100);
@@ -64,6 +64,6 @@ public class FileUtils {
 	 * @return
 	 */
 	public String getFileLogType(String type,String orgFilePath) {
-		return TimeCommon.SDF.format(new Date())+":"+orgFilePath+File.separator+"copyFile.log";
+		return Constants.TimeConstant.SDF.format(new Date())+":"+orgFilePath+File.separator+"copyFile.log";
 	}
 }

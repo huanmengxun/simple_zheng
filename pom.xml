@@ -10,7 +10,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<!--maven项目的打包方式，默认为jar，可供选择的有war、zip、pom -->
 	<!-- 该项目位于本地运行 -->
-	<packaging>jar</packaging>
+	<!-- <packaging>jar</packaging> -->
 	<!-- 开发人员 -->
 	<developers>
 		<developer>
@@ -21,7 +21,6 @@
 	<properties>
 		<!-- Alibaba数据库连接池 -->
 		<druid.version>1.1.16</druid.version>
-		<!-- logback简化model工具jar -->
 		<logback.version>1.1.2</logback.version>
 	</properties>
 	<dependencies>
@@ -37,15 +36,18 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.16</version>
 		</dependency>
+		<!-- 嵌入式数据库 h2 -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.199</version>
+		</dependency>
 
 		<dependency>
 			<groupId>uk.co.caprica</groupId>
 			<artifactId>vlcj</artifactId>
 			<version>3.11.0</version>
 		</dependency>
-
-
-		<!-- model样式上面的简化 ,需要编译器执行对应jar包在编译器上面安装对应功能 -->
 		<dependencies>
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
@@ -58,6 +60,54 @@
 				<version>${logback.version}</version>
 			</dependency>
 		</dependencies>
+		<dependencies>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-classic</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback.version}</version>
+			</dependency>
+		</dependencies>
+
+		<!-- model样式上面的简化 ,需要编译器执行对应jar包在编译器上面安装对应功能 -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.8</version>
+		</dependency>
+		<!-- 测试 -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13-beta-3</version>
+		</dependency>
+		<!-- 日志 -->
+
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>slf4j-impl</artifactId>
+			<version>2.0-alpha2</version>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.logging.log4j</groupId> -->
+		<!-- <artifactId>log4j</artifactId> -->
+		<!-- <version>2.11.2</version> -->
+		<!-- <type>pom</type> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.logging.log4j</groupId> -->
+		<!-- <artifactId>log4j-slf4j-impl</artifactId> -->
+		<!-- <version>2.11.2</version> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.apache.logging.log4j</groupId> -->
+		<!-- <artifactId>log4j-core</artifactId> -->
+		<!-- <version>2.11.2</version> -->
+		<!-- </dependency> -->
 	</dependencies>
-	
+
 </project>
