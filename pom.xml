@@ -30,17 +30,40 @@
 			<artifactId>druid</artifactId>
 			<version>${druid.version}</version>
 		</dependency>
-		<!-- mysql链接 -->
+		<!--数据库连接 -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>8.0.16</version>
 		</dependency>
-		<!-- 嵌入式数据库 h2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>1.4.199</version>
+		</dependency>
+		<!-- 连接池 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>druid</artifactId>
+			<version>1.1.16</version>
+		</dependency>
+
+		<!--抓包工具 -->
+		<dependency>
+			<groupId>com.geccocrawler</groupId>
+			<artifactId>gecco</artifactId>
+			<version>1.0.8</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.12.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.8</version>
 		</dependency>
 
 		<dependency>
@@ -85,8 +108,13 @@
 			<artifactId>junit</artifactId>
 			<version>4.13-beta-3</version>
 		</dependency>
+		<!-- json格式化 -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.58</version>
+		</dependency>
 		<!-- 日志 -->
-
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>slf4j-impl</artifactId>

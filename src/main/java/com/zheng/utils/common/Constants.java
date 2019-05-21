@@ -11,7 +11,7 @@ import java.text.SimpleDateFormat;
  */
 public class Constants {
 	/**
-	 * 功能描述：数据库常量
+	 * 功能描述：数据库常量 数据库连接=各自的数据库前缀+ip号+端口号+数据库连接符号+数据库名称？
 	 * 
 	 * @Package: com.zheng.utils.common
 	 * @author: zheng
@@ -21,49 +21,45 @@ public class Constants {
 		/**
 		 * mysql基础信息
 		 */
-		MYSQL("测试1", "测试2", null, null),
+		ORACLE("jdbc:oracle:thin:@", "192.168.1.150:1521:XE", "oracle.jdbc.driver.OracleDriver"),
+		/**
+		 * mysql基础信息
+		 */
+		MYSQL("jdbc:mysql://", "localhost:3306/", "com.mysql.jdbc.Driver"),
 		/**
 		 * h2数据库基本信息
 		 */
-		H2("root", "huan", "jdbc:h2:tcp://localhost/~/test", "org.h2.Driver");
-		private DataBaseConstants(String username, String password, String url, String className) {
-			this.username = username;
-			this.password = password;
-			this.url = url;
-			this.className = className;
+		H2("jdbc:h2:tcp://localhost", "/~/test", "org.h2.Driver");
+		private DataBaseConstants(String prefixUrl, String urlSplit, String driverName) {
+			this.prefixUrl = prefixUrl;
+			this.urlSplit = urlSplit;
+			this.driverName = driverName;
 		}
 
 		/**
-		 * 数据库用户名
+		 * 数据库链接前缀
 		 */
-		private final String username;
+		private final String prefixUrl;
 		/**
-		 * 数据库密码
+		 * 数据库链接与具体数据库之间的分隔符
 		 */
-		private final String password;
-		/**
-		 * 数据库连接
-		 */
-		private final String url;
-		/**
-		 * 数据库反射类
-		 */
-		private final String className;
+		private final String urlSplit;
 
-		public String getUsername() {
-			return username;
+		/**
+		 * 数据库驱动
+		 */
+		private final String driverName;
+
+		public String getPrefixUrl() {
+			return prefixUrl;
 		}
 
-		public String getPassword() {
-			return password;
+		public String getUrlSplit() {
+			return urlSplit;
 		}
 
-		public String getUrl() {
-			return url;
-		}
-
-		public String getClassName() {
-			return className;
+		public String getDriverName() {
+			return driverName;
 		}
 
 	}
