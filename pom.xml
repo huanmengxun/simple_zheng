@@ -24,6 +24,12 @@
 		<logback.version>1.1.2</logback.version>
 	</properties>
 	<dependencies>
+		<!-- redis -->
+		<dependency>
+			<groupId>redis.clients</groupId>
+			<artifactId>jedis</artifactId>
+			<version>3.1.0-m1</version>
+		</dependency>
 		<!-- 数据库连接 -->
 		<dependency>
 			<groupId>com.alibaba</groupId>

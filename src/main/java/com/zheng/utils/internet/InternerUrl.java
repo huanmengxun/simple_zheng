@@ -16,6 +16,17 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class InternerUrl {
+	/**
+	 * 功能描述：获取绝对路径
+	 *
+	 * @author: zheng
+	 * @param url
+	 * @return
+	 */
+	public String absUrl(String url) {
+		return url;
+	}
+
 	public static HttpURLConnection urlConnection(String url) {
 		URL urls = null;
 		try {

@@ -1,6 +1,7 @@
 package com.zheng.tool;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,10 +32,10 @@ public class QuanMinJousp {
 		// 这就获得所有参数最终的json体了。
 		System.out.println(jsonStr);
 	}
-
+	
+	
 	public void test2(String url) throws IOException {
 		// 这里是分享地址：
-		
 		if(!url.startsWith("http")) {
 			url="https://"+url;
 		}
@@ -44,23 +45,18 @@ public class QuanMinJousp {
 		// 开始连接HTTP请求。
 		Connection.Response demo = tempConn.ignoreContentType(true).method(Connection.Method.GET).execute();
 		Document documentDemo = demo.parse();
-		System.out.println(documentDemo.toString());
-
 		// 这里就是获取该页面的HTML元素。
+		// 存在连接的一般为a标签以及img img主要是图片，a标签主要是图片
 		Elements imgElements = documentDemo.getElementsByTag("img");
 		for (Element e : imgElements) {
-//			String imgSrc=e.attr("abs:src");
-			String imgSrc=e.data();
-			System.out.println(JSON.toJSONString(e.dataNodes()));
-			System.out.println(JSON.toJSONString(e.dataset()));
-//			String imgSrc=e.attr("src");
-			System.out.println(imgSrc);
-//			System.out.println(JSON.toJSONString(e));
-//			System.out.println(JSON.toJSONString(e.attr("data")));
-			
-//			System.out.println(imgSrc);
-//			imgSrc=imgSrc.startsWith("http")?imgSrc:"https://"+orgUrl+"/"+imgSrc;
-//			System.out.println("."+imgSrc);
+			System.out.println(e.absUrl("href"));
+			System.out.println(e.attr("href"));
+			System.out.println(e.attr("abs:src"));
+//			String imgSrc=e.data();
+//			Map<String,String> map=e.dataset();
+//			for(String s:map.values()) {
+//				System.out.println(s);
+//			}
 //			System.out.println(imgSrc);
 		}
 		System.out.println("end");
