@@ -30,17 +30,30 @@ public class ResultData {
 	/**
 	 * list对象装填
 	 */
-	public List<Object> resultList=new ArrayList<>();
+	public List<Object> resultList = new ArrayList<>();
 	/**
 	 * map对象装填
 	 */
-	public Map<Object,Object> mapKey=new HashMap<>();
+	public Map<String, Object> mapKey = new HashMap<>();
 
 	public ResultData() {
 	}
-	public ResultData(String message,Boolean isSucceed) {
-		this.message=message;
-		this.isSucceed=isSucceed;
+
+	public ResultData(String message) {
+		this.message = message;
 	}
-	
+
+	public ResultData(String message, Boolean isSucceed) {
+		this.message = message;
+		this.isSucceed = isSucceed;
+	}
+
+	public static  ResultData error() {
+		return new ResultData("当前接口存在错误", false);
+	}
+
+	public static  ResultData errorHasMsg(String message) {
+		return new ResultData(message, false);
+	}
+
 }

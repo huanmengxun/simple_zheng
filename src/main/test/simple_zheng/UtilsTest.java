@@ -26,6 +26,7 @@ public class UtilsTest {
 	@Test
 	public void testComputerConstantsOutput() throws SocketException {
 		ComputerConstants.getLocalIp();
+		ComputerConstants.getLocalIps();
 	}
 
 	/**
@@ -37,7 +38,7 @@ public class UtilsTest {
 	 */
 	@Test
 	public void testDatabaseLink() throws SocketException {
-		Connection conn = JDBCUtils.getMysqlConn( "", null, "huan");
+		Connection conn = JDBCUtils.getMysqlConn(null, null, "", null, "huan");
 		String sql = "show databases";
 		PreparedStatement pstmt;
 		try {

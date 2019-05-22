@@ -30,11 +30,10 @@ public class ComputerConstants {
 	public static String getLocalIp() {
 		try {
 			InetAddress address=InetAddress.getLocalHost();
-			log.info("本机地址",address);
-			log.info("本机地址",address);
+			log.info("本机地址{}",address);
 			return address.getHostAddress();
 		} catch (UnknownHostException e) {
-//			log.warn("错误信息{0}",e.getMessage());
+//			log.warn("错误信息{}",e.getMessage());
 			e.printStackTrace();
 		}
 		return null;
@@ -51,13 +50,13 @@ public class ComputerConstants {
 				while (addresses.hasMoreElements()) {
 					address = (InetAddress) addresses.nextElement();
 					if (address!= null && address instanceof Inet4Address) {
-						log.info("本机地址：{0}",address);
+						log.info("本机地址：{}",address);
 						ipList.add(address.getHostAddress());
 					}
 				}
 			}
 		} catch (SocketException e) {
-			log.warn("错误信息{0}",e.getMessage());
+			log.warn("错误信息{}",e.getMessage());
 			e.printStackTrace();
 		}
 		return ipList;

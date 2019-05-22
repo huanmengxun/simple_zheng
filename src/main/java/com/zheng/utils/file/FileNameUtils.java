@@ -1,6 +1,9 @@
 package com.zheng.utils.file;
 
 import java.io.File;
+import java.util.Date;
+
+import com.zheng.utils.common.Constants;
 
 /**
  * 功能描述：和文件名有关的一些方法
@@ -9,6 +12,16 @@ import java.io.File;
  * @author: zheng  
  */
 public class FileNameUtils {
+	/**
+	 * 文件类型划分||作为后期的文件名定义则用
+	 * 
+	 * @param type
+	 * @param orgFilePath
+	 * @return
+	 */
+	public static String getFileLogType(String type, String orgFilePath) {
+		return Constants.TimeConstant.SDF.format(new Date()) + ":" + orgFilePath + File.separator + "copyFile.log";
+	}
 	/**
 	 * 功能描述：验证url开头是否带着http，若没有则加上
 	 *

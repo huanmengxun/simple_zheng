@@ -9,6 +9,8 @@ import java.net.HttpURLConnection;
 
 import com.zheng.utils.internet.InternerUrl;
 
+import lombok.extern.log4j.Log4j2;
+
 /**
  * 功能描述：文件下载类
  * 
@@ -16,7 +18,8 @@ import com.zheng.utils.internet.InternerUrl;
  * @author: zheng
  * @date: 2019年5月21日 上午8:44:42
  */
-public class FileDown {
+@Log4j2
+public class FileDownUtils {
 	
 	/**
 	 * 功能描述：通过给与的url菜单下载文件
@@ -25,8 +28,9 @@ public class FileDown {
 	 * @param url
 	 * @param path
 	 */
-	static void downLoadByUrl(String url, String path) {
+	public static void downLoadByUrl(String url, String path) {
 		FileNameUtils.ensureFileExists(path);
+		System.out.println("下载中："+url);
 		HttpURLConnection connection = InternerUrl.urlConnection(FileNameUtils.validateStartUrl(url));
 		try (DataInputStream dataInputStream = new DataInputStream(connection.getInputStream());
 				FileOutputStream fileOutputStream = new FileOutputStream(
@@ -38,8 +42,10 @@ public class FileDown {
 				output.write(buffer, 0, length);
 			}
 			fileOutputStream.write(output.toByteArray());
+			log.info("下载成功");
 		} catch (IOException e) {
-			e.printStackTrace();
+//			e.printStackTrace();
+			log.warn(e.getMessage());
 		} finally {
 			connection.disconnect();
 		}

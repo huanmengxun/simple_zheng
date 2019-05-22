@@ -1,12 +1,11 @@
 package com.zheng.utils.dataUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Properties;
 
 import com.zheng.utils.common.Constants;
 
@@ -17,32 +16,74 @@ public class JDBCUtils {
 	public static String MYSQL = "MYSQL";
 	public static String ORACLE = "ORACLE";
 	public static String H2 = "H2";
-
-	public static Connection getMysqlConn(String dbName, String username, String password) {
-		return getConn("MYSQL", dbName, username, password);
+	
+	public static void main(String[] args) {
+		JDBCUtils.getDefaultConn();
+	}
+	public static Connection getDefaultConn() {
+		try {
+			InputStream in = JDBCUtils.class.getClass().getResourceAsStream("/properties/basecom.properties");
+			
+			Properties properties = new Properties();
+			properties.load(in);
+			properties.getProperty("property_name");
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+			System.out.println(e.getLocalizedMessage());
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
+	
+	/**
+	 * 功能描述：
+	 * @author: zheng
+	 * @param dbName   数据库名称
+	 * @param username 用户名
+	 * @param password 数据库密码
+	 * @return
+	 */
+	public static Connection getMysqlConn(String url, Integer port, String dbName, String username, String password) {
+		url = "localhost";
+		port = 3306;
+		return getConn("localhost", port, "MYSQL", dbName, username, password);
 	}
 
-	public static Connection getOracleConn(String dbName, String username, String password) {
-		return getConn("ORACLE", dbName, username, password);
+	public static Connection getOracleConn(String url, Integer port, String dbName, String username, String password) {
+		url = "localhost";
+		return getConn(url, port, "ORACLE", dbName, username, password);
 	}
 
-	public static Connection getConn(String dataType, String dbName, String username, String password) {
-		String url = "";
+	public static Connection getH2Conn(String url, Integer port, String dbName, String username, String password) {
+		return getConn(url, port, "H2", dbName, username, password);
+	}
+
+	public static Connection getConn(String url, Integer port, String dataType, String dbName, String username,
+			String password) {
 		String driverName = "";
+		if (url == null || url.equals(""))
+			url = "127.0.0.1";
+		String portStr = "";
+		if (port != null) {
+			portStr = ":" + port;
+		}
 		switch (dataType) {
 		case "MYSQL":
-			url = Constants.DataBaseConstants.MYSQL.getPrefixUrl() + Constants.DataBaseConstants.MYSQL.getUrlSplit()
-					+ dbName + "?serverTimezone=GMT";
+			if(portStr.equals(""))portStr=":3306";
+			url = Constants.DataBaseConstants.MYSQL.getPrefixUrl() + url + portStr
+					+ Constants.DataBaseConstants.MYSQL.getUrlSplit() + dbName + "?serverTimezone=GMT";
 			driverName = Constants.DataBaseConstants.MYSQL.getDriverName();
 			break;
 		case "ORACLE":
-			url = Constants.DataBaseConstants.ORACLE.getPrefixUrl() + Constants.DataBaseConstants.ORACLE.getUrlSplit()
-					+ dbName;
+			if(portStr.equals(""))portStr=":1521";
+			url = Constants.DataBaseConstants.ORACLE.getPrefixUrl() + url + portStr
+					+ Constants.DataBaseConstants.ORACLE.getUrlSplit() + dbName;
 			driverName = Constants.DataBaseConstants.ORACLE.getDriverName();
 			break;
 		case "H2":
-			url = Constants.DataBaseConstants.ORACLE.getPrefixUrl() + Constants.DataBaseConstants.ORACLE.getUrlSplit()
-					+ dbName;
+			url = Constants.DataBaseConstants.ORACLE.getPrefixUrl() + url + portStr
+					+ Constants.DataBaseConstants.ORACLE.getUrlSplit() + dbName;
 			driverName = Constants.DataBaseConstants.ORACLE.getDriverName();
 			break;
 		default:

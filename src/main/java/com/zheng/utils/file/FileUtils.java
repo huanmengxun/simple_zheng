@@ -23,18 +23,17 @@ public class FileUtils {
 	 * 
 	 * @author: zheng
 	 * @date: 2019年5月17日 下午2:47:18
-	 * @param filePath
-	 * @param orginStr
-	 * @param replaceStr
+	 * @param filePath 文件所在路径
+	 * @param orginStr 文件名所需要替换的部分
+	 * @param replaceStr  文件名需要被替换成为的不笨
 	 */
-	public void resetFileName(String filePath, String orginStr, String replaceStr) {
+	public static void replaceFileName(String filePath, String orginStr, String replaceStr) {
 		File f = new File(filePath);
-		File writeFile = new File(getFileLogType(null, filePath));
+		File writeFile = new File(FileNameUtils.getFileLogType(null, filePath));
 		if (!writeFile.exists()) {
 			try {
 				writeFile.createNewFile();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -48,7 +47,7 @@ public class FileUtils {
 					try {
 						Thread.sleep(100);
 						if (subF.isDirectory()) {
-							resetFileName(subF.getParent() + File.separator + newName + File.separator, orginStr,
+							replaceFileName(subF.getParent() + File.separator + newName + File.separator, orginStr,
 									replaceStr);
 						}
 					} catch (InterruptedException e) {
@@ -61,16 +60,7 @@ public class FileUtils {
 		}
 	}
 
-	/**
-	 * 文件类型划分||作为后期的文件名定义则用
-	 * 
-	 * @param type
-	 * @param orgFilePath
-	 * @return
-	 */
-	public String getFileLogType(String type, String orgFilePath) {
-		return Constants.TimeConstant.SDF.format(new Date()) + ":" + orgFilePath + File.separator + "copyFile.log";
-	}
+
 //	public boolean isImage(String fileName) {
 //	int i =fileName.lastIndexOf(".");
 //	int length=fileName.length();

@@ -21,15 +21,15 @@ public class Constants {
 		/**
 		 * mysql基础信息
 		 */
-		ORACLE("jdbc:oracle:thin:@", "192.168.1.150:1521:XE", "oracle.jdbc.driver.OracleDriver"),
+		ORACLE("jdbc:oracle:thin:@", ":XE", "oracle.jdbc.driver.OracleDriver"),
 		/**
 		 * mysql基础信息
 		 */
-		MYSQL("jdbc:mysql://", "localhost:3306/", "com.mysql.jdbc.Driver"),
+		MYSQL("jdbc:mysql://", "/", "com.mysql.jdbc.Driver"),
 		/**
 		 * h2数据库基本信息
 		 */
-		H2("jdbc:h2:tcp://localhost", "/~/test", "org.h2.Driver");
+		H2("jdbc:h2:tcp://", "/~/test", "org.h2.Driver");
 		private DataBaseConstants(String prefixUrl, String urlSplit, String driverName) {
 			this.prefixUrl = prefixUrl;
 			this.urlSplit = urlSplit;
@@ -72,6 +72,31 @@ public class Constants {
 	 * @date: 2019年5月18日 上午12:56:24
 	 */
 	public interface TimeConstant {
+		/**
+		 * 年
+		 */
+		public static int YEAR= 1;
+		/**
+		 * 月
+		 */
+		public static int MONTH=2;
+		/**
+		 * 日
+		 */
+		public static int DAY=3;
+		/**
+		 * 时
+		 */
+		public static int HOUR=4;
+		/**
+		 * 分
+		 */
+		public static int MINUTE=5;
+		/**
+		 * 秒
+		 */
+		public static int SECOND=6;
+
 		/**
 		 * 日期格式化
 		 */
