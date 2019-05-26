@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import org.junit.Test;
 
 import com.mysql.cj.xdevapi.Result;
-import com.zheng.utils.common.ComputerConstants;
+import com.zheng.localProperties.ComputerConstants;
 import com.zheng.utils.dataUtil.JDBCUtils;
 
 import lombok.extern.log4j.Log4j2;

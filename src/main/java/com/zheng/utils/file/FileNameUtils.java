@@ -3,7 +3,7 @@ package com.zheng.utils.file;
 import java.io.File;
 import java.util.Date;
 
-import com.zheng.utils.common.Constants;
+import com.zheng.localProperties.Constants;
 
 /**
  * 功能描述：和文件名有关的一些方法

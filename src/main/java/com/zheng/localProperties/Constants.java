@@ -1,6 +1,8 @@
-package com.zheng.utils.common;
+package com.zheng.localProperties;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 功能描述：常量类
@@ -10,6 +12,12 @@ import java.text.SimpleDateFormat;
  * @date: 2019年5月18日 上午12:41:40
  */
 public class Constants {
+	public Map<String,Object> getDataMap(){
+		Map<String,Object> param=new HashMap<>();
+//		param.put(key, value);
+		
+		return param;
+	}
 	/**
 	 * 功能描述：数据库常量 数据库连接=各自的数据库前缀+ip号+端口号+数据库连接符号+数据库名称？
 	 * 
@@ -25,7 +33,9 @@ public class Constants {
 		/**
 		 * mysql基础信息
 		 */
-		MYSQL("jdbc:mysql://", "/", "com.mysql.jdbc.Driver"),
+//		MYSQL("jdbc:mysql://", "/", "com.mysql.jdbc.Driver"),
+		MYSQL("jdbc:mysql://", "/", "com.mysql.cj.jdbc.Driver"),
+		
 		/**
 		 * h2数据库基本信息
 		 */

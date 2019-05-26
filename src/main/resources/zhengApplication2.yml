@@ -1,0 +1,7 @@
+dataSource:
+  dataType: mysql
+  url: 127.0.0.1
+  port: 3306
+  dbName: javatest
+  username: root
+  password: huan

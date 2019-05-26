@@ -34,7 +34,7 @@ public class ResultData {
 	/**
 	 * map对象装填
 	 */
-	public Map<String, Object> mapKey = new HashMap<>();
+	public Map<Object, Object> mapKey = new HashMap<>();
 
 	public ResultData() {
 	}
@@ -52,7 +52,7 @@ public class ResultData {
 		return new ResultData("当前接口存在错误", false);
 	}
 
-	public static  ResultData errorHasMsg(String message) {
+	public static  ResultData error(String message) {
 		return new ResultData(message, false);
 	}
 
