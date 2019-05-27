@@ -28,12 +28,7 @@ public class FileDownUtils {
 			filename = path + File.separator + url.substring(url.lastIndexOf("/"));
 			break;
 		default://	默认为time
-			int lastPoint=url.lastIndexOf(".");
-			if(url.lastIndexOf("/")>lastPoint) {
-				filename = path + File.separator + System.currentTimeMillis()  ;
-			}else {
-				filename = path + File.separator + System.currentTimeMillis()  +url.substring(lastPoint);
-			}
+			filename=FileNameUtils.getTimeName(url, path);
 		}
 		File file = new File(filename);
 		if (file.exists()) {

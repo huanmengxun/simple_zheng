@@ -3,8 +3,17 @@ package com.zheng.localProperties;
 import java.util.Properties;
 
 public class SystemConstants {
-
+	public static String  USER_HOME = "";
+	static {
+		Properties props = System.getProperties(); // 系统属性
+		USER_HOME=props.getProperty("user.home");
+	}
+	
 	public static void main(String[] args) {
+//		System.out.println(USER_HOME);
+		test();
+	}
+	public static void test() {
 		Properties props = System.getProperties(); // 系统属性
 		System.out.println("常用换行符, 路径分隔符,文件分隔符:");
 		System.out.println("文件分隔符：" + props.getProperty("file.separator")); // 在 unix 系统中是＂／＂

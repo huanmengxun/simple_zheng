@@ -12,6 +12,7 @@ import com.zheng.localProperties.Constants;
  * @author: zheng  
  */
 public class FileNameUtils {
+	
 	/**
 	 * 文件类型划分||作为后期的文件名定义则用
 	 * 
@@ -21,6 +22,17 @@ public class FileNameUtils {
 	 */
 	public static String getFileLogType(String type, String orgFilePath) {
 		return Constants.TimeConstant.SDF.format(new Date()) + ":" + orgFilePath + File.separator + "copyFile.log";
+	}
+	
+	public  static String getTimeName(String oldFilePath,String newPath) {
+		String fileName="";
+		int lastPoint=oldFilePath.lastIndexOf(".");
+		if(oldFilePath.lastIndexOf("/")>lastPoint) {
+			fileName = newPath + File.separator + System.currentTimeMillis()  ;
+		}else {
+			fileName = newPath + File.separator + System.currentTimeMillis()  +oldFilePath.substring(lastPoint);
+		}
+		return fileName;
 	}
 	/**
 	 * 功能描述：验证url开头是否带着http，若没有则加上

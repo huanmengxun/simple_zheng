@@ -1,15 +1,15 @@
-package com.zheng.swing;
+package com.zheng.swing.database;
 
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 /**
- * 功能描述：拼接sql语句打印出sql
+ * 功能描述：数据库功能界面
  * 
- * @Package: com.zheng.swing 
+ * @Package: com.zheng.swing.database 
  * @author: zheng  
  */
-public class SqlExportWindow {
+public class SqlFunWindow {
 
 	private JFrame frame;
 
@@ -20,7 +20,7 @@ public class SqlExportWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					SqlExportWindow window = new SqlExportWindow();
+					SqlFunWindow window = new SqlFunWindow();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -32,7 +32,7 @@ public class SqlExportWindow {
 	/**
 	 * Create the application.
 	 */
-	public SqlExportWindow() {
+	public SqlFunWindow() {
 		initialize();
 	}
 

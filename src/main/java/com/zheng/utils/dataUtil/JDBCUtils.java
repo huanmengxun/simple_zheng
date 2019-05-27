@@ -13,6 +13,8 @@ import java.util.Map;
 
 import com.zheng.localProperties.Constants;
 import com.zheng.localProperties.LoadProperties;
+import com.zheng.localProperties.LoadYmal;
+import com.zheng.utils.file.FileUtils;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -22,16 +24,27 @@ public class JDBCUtils {
 	public static String ORACLE = "ORACLE";
 	public static String H2 = "H2";
 	public static Connection CONN = null;
-	static {
-		if (CONN == null) {
-			CONN = JDBCUtils.getConnByProperties();
+	
+//	static {
+//		if (CONN == null) {
+//			CONN = JDBCUtils.getConnByProperties();
+//		}
+//	}
+	public static void main(String[] args) throws Exception {
+		getConnByYml();
+	}
+
+	
+	public static Connection getConnByYml() {
+		Map<String,Object> ymlMap=LoadYmal.getYmlMap();
+		Object obj=ymlMap.get("dataSource");
+		if(obj!=null&&obj instanceof Map) {
+			return getConnByMap((Map<String,Object>)obj);
+		}else {
+			return null;
 		}
 	}
-
-	public static void main(String[] args) throws Exception {
-		query("show tables");
-	}
-
+	
 	public static Connection getConnByProperties() {
 		return getConnByProperties(null, null);
 	}
@@ -45,6 +58,10 @@ public class JDBCUtils {
 	 */
 	public static Connection getConnByProperties(Boolean isResources, String propertiesPath) {
 		Map<Object, Object> prop = LoadProperties.GetDBDefaultSet(isResources, propertiesPath);
+		return getConnByMap(prop);
+	}
+
+	public static Connection getConnByMap(Map<?,Object> prop) {
 		if (prop != null) {
 			if (prop.get("dataType") == null) {
 				log.error("未指定dataType名称是为那个数据库");
@@ -135,7 +152,7 @@ public class JDBCUtils {
 		try {
 			System.out.println("开始连接");
 			Class.forName(driverName);
-//			log.info("{}{}{}",url, username, password);
+			log.info("{},{},{}",url, username, password);
 			CONN = DriverManager.getConnection(url, username, password);
 			log.info("{}数据库连接成功", dbName.toUpperCase());
 			return CONN;
@@ -175,6 +192,10 @@ public class JDBCUtils {
 //		}
 //		return i;
 //	}
+	
+	public static void exportSql(String exportFile,String tableName, String sql) {
+		FileUtils.writeAppointFile(exportFile, genExportSql(tableName, sql));
+	}
 	/**
 	 * 功能描述：根据查询语句生成表sql
 	 *
@@ -193,13 +214,20 @@ public class JDBCUtils {
 			while (rs.next()) {
 				String insertSqlField="(";
 				String insertSqlValue="values(";
-				for (int i = 1; i <= col; i++) {s
+				for (int i = 1; i <= col; i++) {
 					if(fieldName.contains(md.getColumnLabel(i))) {
 						insertSqlField+="`"+md.getColumnLabel(i)+"`,";
-						insertSqlValue+="'"+rs.getObject(i)+"',";
+						Object obj=rs.getObject(i);
+						if(obj==null) {
+							insertSqlValue+="null,";
+						}else if(obj instanceof Number) {
+							insertSqlValue+=rs.getObject(i)+",";
+						}else {
+							insertSqlValue+="'"+rs.getObject(i)+"',";
+						}
 					}
-					exportSql.add(insertSql+insertSqlField.substring(0,insertSqlField.length()-1)+") "+insertSqlValue.substring(0,insertSqlValue.length()-1)+");");
 				}
+				exportSql.add(insertSql+insertSqlField.substring(0,insertSqlField.length()-1)+") "+insertSqlValue.substring(0,insertSqlValue.length()-1)+");");
 			}
 			return exportSql;
 		} catch (SQLException e) {

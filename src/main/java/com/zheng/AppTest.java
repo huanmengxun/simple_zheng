@@ -7,13 +7,18 @@ public class AppTest {
 	public static void main(String[] args) {
 //		JDBCUtils.conn=JDBCUtils.getConnByProperties();
 		try {
-//			String sql="update test01 set id=1111 where id = 131";
-//			System.out.println(JDBCUtils.update(sql));
-			String sql="desc test01";
-//			String sql="select * from test01";
-//			System.out.println(JSON.toJSONString(JDBCUtils.query(sql)));
-//			System.out.println(JDBCUtils.getTabAllField("test01"));
-			FileUtils.writeAppointFile("f:/12323/1.sql", JDBCUtils.genExportSql("test01", "select * from test01"));
+			JDBCUtils.CONN = JDBCUtils.getConnByProperties();
+			FileUtils.writeAppointFile("f:/slpt_service.sql", 
+					JDBCUtils.genExportSql("slpt_service", "select * from slpt_service where includeorgname like '%月坛%' and smalltypename like '财务' "));
+			String sql2="select * from bpm_form_table where tableid in(" + 
+					"select tableid from slpt_service where includeorgname like '%月坛%' and smalltypename like '财务' )";
+			FileUtils.writeAppointFile("f:/bpm_form_table.sql", 
+					JDBCUtils.genExportSql("bpm_form_table", sql2));
+			String sql3="select * from bpm_form_field where tableid in(" + 
+					"select tableid from slpt_service where includeorgname like '%月坛%' and smalltypename like '财务' )";
+			FileUtils.writeAppointFile("f:/bpm_form_field.sql", 
+					JDBCUtils.genExportSql("bpm_form_field", sql3));
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

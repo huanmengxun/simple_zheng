@@ -1,6 +1,7 @@
 package com.zheng.utils.file;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
@@ -20,53 +21,148 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class FileUtils {
 	public static void main(String[] args) {
+//		String path="F:\\img欧美";	
+//		String path="F:\\img清纯";
+//		String path="F:\\img熟女";
+//		removeAllFileToNewFolder(path+File.separator+"-1", path+File.separator+"1");
+//		removeAllFileToNewFolder(path+File.separator+"-2", path+File.separator+"2");
+//		removeAllFileToNewFolder(path+File.separator+"-3", path+File.separator+"3");
+//		removeAllFileToNewFolder(path+File.separator+"-4", path+File.separator+"4");
+		try {
+			copyFileToNewPath("D:\\sql.sql", "D:\\sql.txt");
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
-
-	
+	public static void writeAppointFile(String file, List<String> string) {
+		writeAppointFile(file, string, false);
+	}
 	/**
 	 * 功能描述：将list里面的字符串放置在指定文件夹之中
 	 *
 	 * @author: zheng
-	 * @param file
-	 * @param string
+	 * @param file 写文件
+	 * @param string 字符串
+	 * @param isLevelOrgin 文件写方式，覆盖或者添加
 	 */
-	public static void writeAppointFile(String file, List<String> string) {
-		File newFile=new File(file);
+	public static void writeAppointFile(String file, List<String> string,boolean isLevelOrgin) {
+		File newFile = new File(file);
 		newFile.getParentFile().mkdirs();
-		try(FileWriter fw=new FileWriter(newFile)) {
-			for(String s:string) {
-				fw.write("\t"+s+"\r\n");
-				
+		try (FileWriter fw = new FileWriter(newFile,isLevelOrgin)) {
+			for (String s : string) {
+				fw.write("\t" + s + "\r\n");
 			}
-			log.info("{}文件写入成功",file);
+			log.info("{}文件写入成功", file);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
-	}	
-//	/**
-//	 * 功能描述： 文件迁移
-//	 * 
-//	 * @author: zheng
-//	 * @param oldFileName
-//	 * @param newFileName
-//	 * @throws Exception 
-//	 */
-//	public static void copyFileToNewPath(String oldFileName, String newFileName) throws Exception {
-//		File oldFile=new File(oldFileName);
-//		File newFile=new File(newFileName);
-//		copyFileToNewPath(oldFile, newFile);
-//	}
-//
-//	public static void copyFileToNewPath(File oldFile, File newFile) throws Exception {
-//		if(oldFile.exists()) {
-////			oldFile.createTempFile(prefix, suffix)
-//		}else {
-//			throw new Exception(oldFile+"文件找不到");
-//		}
-//	}
+
+	}
+
+	/**
+	 * 功能描述：在保留原有文件的基础上面将所有文件合并
+	 *
+	 * @author: zheng
+	 * @date: 2019年5月27日 上午12:02:42
+	 * @param fileNames
+	 * @throws Exception 
+	 */
+	public static void mergeMultiFileAndLevelOld(String... fileNames) throws Exception {
+		if (fileNames.length < 2) {
+			throw new Exception("请添加需要合并的文件");
+		}
+		for(int i=1;i<fileNames.length;i++) {
+			copyFileToNewPath(fileNames[0], fileNames[i]);
+		}
+	}
+
+	/**
+	 * 功能描述：在不保留原有文件的基础上面将所有文件合并
+	 *
+	 * @author: zheng
+	 * @date: 2019年5月27日 上午12:03:01
+	 * @param fileNames
+	 * @throws Exception
+	 */
+	public static void mergeMultiFile(String... fileNames) throws Exception {
+		if (fileNames.length < 2) {
+			throw new Exception("请添加需要合并的文件");
+		}
+		for(int i=1;i<fileNames.length;i++) {
+			copyFileToNewPath(fileNames[0], fileNames[i], false);
+		}
+	}
+
+	/**
+	 * 功能描述：
+	 * 
+	 * @author: zheng
+	 * @date: 2019年5月27日 上午12:01:27
+	 * @param filePath1      合并的文件夹一
+	 * @param filePath2      合并的文件夹二
+	 * @param newFileName    是否保留就有文件
+	 * @param isLevelOldFile
+	 */
+	public static void mergeTowFile(String filePath1, String filePath2, String newFileName, boolean isLevelOldFile) {
+		try {
+			copyFileToNewPath(filePath1, newFileName, isLevelOldFile);
+			copyFileToNewPath(filePath2, newFileName, isLevelOldFile);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void mergeTowFile(String filePath1, String filePath2, String newFileName) {
+		mergeTowFile(filePath1, filePath2, newFileName);
+	}
+
+	public static void copyFileToNewPath(String oldFileName, String newFileName) throws Exception {
+		copyFileToNewPath(oldFileName, newFileName, true);
+	}
+
+	public static void copyFileToNewPath(String oldFileName, String newFileName, boolean isLevelOldFile)
+			throws Exception {
+		File oldFile = new File(oldFileName);
+		File newFile = new File(newFileName);
+		copyFileToNewPath(oldFile, newFile, isLevelOldFile);
+	}
+	/**
+	 * 功能描述： * 功能描述： 文件迁移
+	 * 
+	 * @author: zheng
+	 * @date: 2019年5月27日 上午12:05:01
+	 * @param oldFileName
+	 * @param newFileName
+	 * @param isLevelOldFile 是否保留原有文件
+	 * @throws Exception
+	 */
+	public static void copyFileToNewPath(File oldFile, File newFile, boolean isLevelOldFile)
+			throws Exception {
+		if (oldFile.exists()) {
+			try (FileReader fr = new FileReader(oldFile); FileWriter fw = new FileWriter(newFile, true);) {
+				char[] c = new char[1024];
+				while (fr.read(c) != -1) {
+					fw.write(c);
+				}
+				fw.write("\r\n");
+				System.out.println("复制成功");
+			} catch (Exception e) {
+			}
+			if (!isLevelOldFile) {
+				oldFile.delete();
+			}
+		} else {
+			try {
+				throw new Exception(oldFile + "文件找不到");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 	/**
 	 * 功能描述： 在该目录下删除含有指定名称的文件-遍历
@@ -182,33 +278,6 @@ public class FileUtils {
 		}
 	}
 
-	/**
-	 * 功能描述：
-	 *
-	 * @author: zheng
-	 * @date: 2019年5月25日 下午12:13:52
-	 * @param filePath 文件所在顶级目录
-	 * @param fileName 文件名称
-	 * @param type     后期为做文件名的分类而成
-	 */
-	public static void deleteByFileName(String filePath, String fileName, int type) {
-		File pathFile = new File(filePath);
-		System.out.println("文件夹" + filePath);
-		if (!pathFile.exists()) {
-			return;
-		} else {
-			for (File subFile : pathFile.listFiles()) {
-				if (subFile.isDirectory()) {
-					deleteByFileName(subFile.getAbsolutePath(), fileName, type);
-				} else {
-					if (subFile.getName().equals(fileName)) {
-						subFile.deleteOnExit();
-					}
-				}
-			}
-		}
-	}
-
 	public static void removeAllFileToNewFolder(String oldFileFolderPath, String newfolderPath) {
 		removeToNewPlaceByFileName(oldFileFolderPath, newfolderPath, "", 11, true);
 		deleteEmptyFolderByFolderPath(oldFileFolderPath);
@@ -237,6 +306,9 @@ public class FileUtils {
 					removeToNewPlaceByFileName(f.getAbsolutePath(), newfolderPath, fileKeyName, moveType, isAll);
 				} else {
 					f.renameTo(new File(newfolderPath + File.separator + path.getName() + "-" + f.getName()));
+//					String newName=FileNameUtils.getTimeName(f.getName(), newfolderPath);
+//					System.out.println(newName);
+//					f.renameTo(new File(newName));
 				}
 
 			}
