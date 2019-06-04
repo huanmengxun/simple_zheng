@@ -3,20 +3,26 @@ package com.zheng.swing.database;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+
 /**
  * 功能描述：数据库功能界面
  * 
- * @Package: com.zheng.swing.database 
- * @author: zheng  
+ * @Package: com.zheng.swing.database
+ * @author: zheng
  */
 public class SqlFunWindow {
 
-	private JFrame frame;
+	public JFrame frame;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
+		try {
+			org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper.launchBeautyEyeLNF();
+		} catch (Exception e) {
+			// TODO exception
+		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -41,7 +47,7 @@ public class SqlFunWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setBounds(100, 100, 500, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 

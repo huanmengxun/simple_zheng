@@ -10,8 +10,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.zheng.utils.file.FileDownUtils;
-import com.zheng.utils.file.FileNameUtils;
+import com.zheng.utils.dataUtil.FileNameUtils;
+import com.zheng.utils.file.action.FileReadAndWrite;
 
 public class MainTest {
 	public  static String titleTrim(String title) {
@@ -24,15 +24,16 @@ public class MainTest {
 	public static boolean isFileRegularTrue(String fileName) {
 		File file=new File(fileName);
 
-		if(file.exists()||fileName.contains("姐弟")
-				||fileName.contains("韩漫")
-				||fileName.contains("母子")
-				||fileName.contains("母姐")
-				||fileName.contains("妈")
-				||fileName.contains("母亲")
-				||fileName.contains("人妻")
-				||fileName.contains("扶她")
-				||fileName.contains("美式画风")
+		if(file.exists()||!fileName.contains("精灵")
+//				||fileName.contains("姐弟")
+//				||fileName.contains("韩漫")
+//				||fileName.contains("母子")
+//				||fileName.contains("母姐")
+//				||fileName.contains("妈")
+//				||fileName.contains("母亲")
+//				||fileName.contains("人妻")
+//				||fileName.contains("扶她")
+//				||fileName.contains("美式画风")
 				) {
 			return false;
 		}else {
@@ -135,18 +136,18 @@ public class MainTest {
 				public void run() {
 						String url=e.attr("abs:src");
 						if(url!=null&&!url.equals("")&&!url.endsWith("248x355.jpg")) {
-							FileDownUtils.downUrlFileAndNameByTime(url, filePath);
+							FileReadAndWrite.downUrlFileAndNameByTime(url, filePath);
 						}
 				}
 			}.run();
 			Map<String,String> data=e.dataset();
 			for(String a:data.values()) {
-				FileDownUtils.downUrlFileAndNameByTime(a, filePath);
+				FileReadAndWrite.downUrlFileAndNameByTime(a, filePath);
 			}
 		}
 	}
 	public static void main(String[] args) {
-		String url="http://mmas.xyz/jhna/12.html";
+		String url="http://mmas.xyz/cfmw/12/45.html";
 		testConn(url,"next");
 	}
 //	

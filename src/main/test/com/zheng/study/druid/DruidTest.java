@@ -52,7 +52,7 @@ public class DruidTest {
 	}
 
 	public static void main(String[] args) {
-		Connection conn=getConnByMap();
-		System.err.println("链接成功");
+//		Connection conn=getConnByMap();
+//		System.err.println("链接成功");
 	}
 }

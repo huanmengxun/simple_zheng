@@ -11,64 +11,96 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSON;
 import com.zheng.localProperties.Constants;
 import com.zheng.localProperties.LoadProperties;
 import com.zheng.localProperties.LoadYmal;
-import com.zheng.utils.file.FileUtils;
+import com.zheng.utils.dataUtil.model.DataBaseModel;
 
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class JDBCUtils {
+public class DataBaseConn {
 	public static String MYSQL = "MYSQL";
 	public static String ORACLE = "ORACLE";
 	public static String H2 = "H2";
 	public static Connection CONN = null;
+
+//	/* 查询数据库 ‘mammothcode’ 所有表注释 */
+//	SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema='mammothcode';
 	
 //	static {
 //		if (CONN == null) {
-//			CONN = JDBCUtils.getConnByProperties();
+//			CONN = DataBaseConn.getConnByYml();
 //		}
 //	}
+
+
 	public static void main(String[] args) throws Exception {
-		getConnByYml();
+		System.out.println(JSON.toJSONString(getConnByProperties()));
 	}
 
-	
 	public static Connection getConnByYml() {
-		Map<String,Object> ymlMap=LoadYmal.getYmlMap();
-		Object obj=ymlMap.get("dataSource");
-		if(obj!=null&&obj instanceof Map) {
-			return getConnByMap((Map<String,Object>)obj);
-		}else {
+		Map<String, Object> ymlMap = LoadYmal.getYmlMap();
+		Object obj = ymlMap.get("dataSource.master");
+		if (obj != null && obj instanceof Map) {
+			return getConnByMap((Map<String, Object>) obj);
+		} else {
 			return null;
 		}
 	}
-	
+
 	public static Connection getConnByProperties() {
-		return getConnByProperties(null, null);
+		return getConnByProperties(null);
 	}
 
 	/**
 	 * 功能描述：
 	 *
 	 * @param propertiesPath 配置文件
-	 * @param isResources    是否是根据默认路径查找配置文件
 	 * @return
 	 */
-	public static Connection getConnByProperties(Boolean isResources, String propertiesPath) {
-		Map<Object, Object> prop = LoadProperties.GetDBDefaultSet(isResources, propertiesPath);
-		return getConnByMap(prop);
+	public static Connection getConnByProperties(String propertiesPath) {
+		Map<Object, Object> prop = LoadProperties.GetDBDefaultSet(null);
+		return getConnByMap(prop,"sql."+prop.get("sql.master")+".");
 	}
 
-	public static Connection getConnByMap(Map<?,Object> prop) {
+
+	public static Connection getConnByMap(Map<?, Object> prop,String preFix) {
+		if (prop != null) {
+			if (prop.get(preFix+"dataType") == null) {
+				log.error("未指定dataType数据库类型");
+				return null;
+			}
+			
+			if (prop.get(preFix+"dataIp") == null) {
+				log.error("未指定ip代表具体ip");
+				return null;
+			}
+			if (prop.get(preFix+"dbName") == null) {
+				log.error("未指定使用数据库dbName名称为");
+				return null;
+			}
+			if (prop.get(preFix+"password") == null) {
+				log.error("未指定数据库密码password");
+				return null;
+			}
+			return getConn(prop.get(preFix+"dataIp").toString(), prop.get(preFix+"port").toString(), prop.get(preFix+"dataType").toString(),
+					prop.get(preFix+"dbName").toString(), prop.get(preFix+"username").toString(), prop.get(preFix+"password").toString());
+		} else {
+			log.error("未存在配置信息");
+			return null;
+		}
+	}
+	
+	public static Connection getConnByMap(Map<?, Object> prop) {
 		if (prop != null) {
 			if (prop.get("dataType") == null) {
 				log.error("未指定dataType名称是为那个数据库");
 				return null;
 			}
-			if (prop.get("url") == null) {
-				log.error("未指定url代表具体ip");
+			if (prop.get("dataIp") == null) {
+				log.error("未指定ip代表具体ip");
 				return null;
 			}
 			if (prop.get("dbName") == null) {
@@ -79,7 +111,7 @@ public class JDBCUtils {
 				log.error("未指定数据库密码password");
 				return null;
 			}
-			return getConn(prop.get("url").toString(), prop.get("port").toString(), prop.get("dataType").toString(),
+			return getConn(prop.get("dataIp").toString(), prop.get("port").toString(), prop.get("dataType").toString(),
 					prop.get("dbName").toString(), prop.get("username").toString(), prop.get("password").toString());
 		} else {
 			log.error("未存在配置信息");
@@ -87,56 +119,48 @@ public class JDBCUtils {
 		}
 	}
 
-	/**
-	 * 功能描述：
-	 * 
-	 * @author: zheng
-	 * @param dbName   数据库名称
-	 * @param username 用户名
-	 * @param password 数据库密码
-	 * @return
-	 */
-	public static Connection getMysqlConn(String url, String port, String dbName, String username, String password) {
-		port = "3306";
-		return getConn(url, port, "MYSQL", dbName, username, password);
+	public static Connection getConnn(DataBaseModel model) {
+		return getConn(model.getDataIp(), model.getPort(), model.getDateType(), model.getDbName(), model.getUsername(), model.getPassword());
 	}
-
-	public static Connection getOracleConn(String url, String port, String dbName, String username, String password) {
-		return getConn(url, port, "ORACLE", dbName, username, password);
-	}
-
-	public static Connection getH2Conn(String url, String port, String dbName, String username, String password) {
-		return getConn(url, port, "H2", dbName, username, password);
-	}
-
-	public static Connection getConn(String url, String port, String dataType, String dbName, String username,
+	
+	public static Connection getConn(String dataIp, String port, String dataType, String dbName, String username,
 			String password) {
 		String driverName = "";
-		if (url == null || url.equals(""))
-			url = "127.0.0.1";
+		if (dataIp == null || dataIp.equals(""))
+			dataIp = "127.0.0.1";
 		String portStr = "";
 		if (port != null) {
 			portStr = ":" + port;
 		}
+		StringBuilder url=new StringBuilder();
 		switch (dataType.toUpperCase()) {
 		case "MYSQL":
 			if (portStr.equals(""))
 				portStr = ":3306";
-			url = Constants.DataBaseConstants.MYSQL.getPrefixUrl() + url + portStr
-					+ Constants.DataBaseConstants.MYSQL.getUrlSplit() + dbName
-					+ "?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false";
+			url.append(Constants.DataBaseConstants.MYSQL.getPrefixUrl());
+			url.append(dataIp);
+			url.append(portStr);
+			url.append(Constants.DataBaseConstants.MYSQL.getUrlSplit());
+			url.append(dbName);
+			url.append("?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false");
 			driverName = Constants.DataBaseConstants.MYSQL.getDriverName();
 			break;
 		case "ORACLE":
 			if (portStr.equals(""))
 				portStr = ":1521";
-			url = Constants.DataBaseConstants.ORACLE.getPrefixUrl() + url + portStr
-					+ Constants.DataBaseConstants.ORACLE.getUrlSplit() + dbName;
+			url.append(Constants.DataBaseConstants.ORACLE.getPrefixUrl());
+			url.append(dataIp);
+			url.append(portStr);
+			url.append(Constants.DataBaseConstants.ORACLE.getUrlSplit());
+			url.append(dbName);
 			driverName = Constants.DataBaseConstants.ORACLE.getDriverName();
 			break;
 		case "H2":
-			url = Constants.DataBaseConstants.ORACLE.getPrefixUrl() + url + portStr
-					+ Constants.DataBaseConstants.ORACLE.getUrlSplit() + dbName;
+			url.append(Constants.DataBaseConstants.H2.getPrefixUrl());
+			url.append(dataIp);
+			url.append(portStr);
+			url.append(Constants.DataBaseConstants.H2.getUrlSplit());
+			url.append(dbName);
 			driverName = Constants.DataBaseConstants.ORACLE.getDriverName();
 			break;
 		default:
@@ -152,8 +176,8 @@ public class JDBCUtils {
 		try {
 			System.out.println("开始连接");
 			Class.forName(driverName);
-			log.info("{},{},{}",url, username, password);
-			CONN = DriverManager.getConnection(url, username, password);
+			log.info("{},{},{}", url, username, password);
+			CONN = DriverManager.getConnection(url.toString(), username, password);
 			log.info("{}数据库连接成功", dbName.toUpperCase());
 			return CONN;
 		} catch (ClassNotFoundException e) {
@@ -192,49 +216,6 @@ public class JDBCUtils {
 //		}
 //		return i;
 //	}
-	
-	public static void exportSql(String exportFile,String tableName, String sql) {
-		FileUtils.writeAppointFile(exportFile, genExportSql(tableName, sql));
-	}
-	/**
-	 * 功能描述：根据查询语句生成表sql
-	 *
-	 * @author: zheng 
-	 * @param tableName
-	 * @param sql
-	 * @return
-	 */
-	public static List<String> genExportSql(String tableName, String sql) {
-		List<String> exportSql=new ArrayList<>();
-		List<String> fieldName = getTabAllField(tableName);
-		try (ResultSet rs = getResultSet(sql, "query");) {
-			ResultSetMetaData md = rs.getMetaData();
-			int col = md.getColumnCount();
-			String insertSql="insert into `"+ tableName+"`" ;
-			while (rs.next()) {
-				String insertSqlField="(";
-				String insertSqlValue="values(";
-				for (int i = 1; i <= col; i++) {
-					if(fieldName.contains(md.getColumnLabel(i))) {
-						insertSqlField+="`"+md.getColumnLabel(i)+"`,";
-						Object obj=rs.getObject(i);
-						if(obj==null) {
-							insertSqlValue+="null,";
-						}else if(obj instanceof Number) {
-							insertSqlValue+=rs.getObject(i)+",";
-						}else {
-							insertSqlValue+="'"+rs.getObject(i)+"',";
-						}
-					}
-				}
-				exportSql.add(insertSql+insertSqlField.substring(0,insertSqlField.length()-1)+") "+insertSqlValue.substring(0,insertSqlValue.length()-1)+");");
-			}
-			return exportSql;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 
 	/**
 	 * 功能描述：获取表中所有字段
@@ -262,6 +243,10 @@ public class JDBCUtils {
 	 */
 	public static List<Map<String, Object>> query(String sql) {
 		try (ResultSet rs = getResultSet(sql, "query");) {
+			log.info(sql);
+			if(rs==null) {
+				return null;
+			}
 			ResultSetMetaData md = rs.getMetaData();
 			int col = md.getColumnCount();
 			List<Map<String, Object>> result = new ArrayList<>();
@@ -272,6 +257,7 @@ public class JDBCUtils {
 				}
 				result.add(param);
 			}
+			log.info(result);
 			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -279,26 +265,27 @@ public class JDBCUtils {
 		return null;
 	}
 
-	private static ResultSet getResultSet(String sql, String type) {
+	protected static ResultSet getResultSet(String sql, String type, Object... param) {
+		PreparedStatement ps = null;
+		type = type == null ? "query" : type;
 		try {
 			if (CONN == null) {
 				throw new Exception("请创建连接");
 			}
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		}
-		PreparedStatement pstmt = null;
-		try {
+			ResultSet rs = null;
 			switch (type) {
 			case "query":
-				pstmt = (PreparedStatement) CONN.prepareStatement(sql);
+				ps = CONN.prepareStatement(sql);
+				rs = ps.executeQuery();
 				break;
 			default:
-				pstmt = (PreparedStatement) CONN.prepareStatement(sql);
+				ps = CONN.prepareStatement(sql);
+				rs = ps.executeQuery();
 			}
-			ResultSet rs = pstmt.executeQuery();
 			return rs;
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;

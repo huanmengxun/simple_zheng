@@ -13,8 +13,6 @@ import java.util.Map;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
-import com.alibaba.fastjson.JSON;
-
 //1.JYAML
 //
 //2.SnakeYAML
@@ -23,7 +21,8 @@ import com.alibaba.fastjson.JSON;
 public class LoadYmal {
 
 	private final static DumperOptions OPTIONS = new DumperOptions();
-	private static String APP_FILE_PATH = "src/main/resources/zhengApplication.yml";
+//	private static String APP_FILE_PATH = "src/main/resources/zhengApplication.yml";
+	private static String APP_FILE_PATH = "zhengApplication.yml";
 	static {
 		// 将默认读取的方式设置为块状读取
 		OPTIONS.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
@@ -32,31 +31,24 @@ public class LoadYmal {
 	public static void setYmlAppFilePath(String appFilePath) {
 		APP_FILE_PATH = appFilePath;
 	}
+
 	public static Map<String, Object> getYmlMap() {
 		return getYmlMap(APP_FILE_PATH);
 	}
+
 	public static Map<String, Object> getYmlMap(String appFilePath) {
 		Yaml yaml = new Yaml();
 		try {
-			Map<String, Object> result= yaml.load(new FileInputStream(new File(appFilePath)));
+			Map<String, Object> result = yaml.load(new FileInputStream(new File(appFilePath)));
 			return result;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
-	
 
 	public static void main(String[] args) {
-		try {
-			Map<String, Object> param = new HashMap<>();
-			param.put("dataType1", "mysql2");
-			String appFilePath = "src/main/resources/zhengApplication.yml";
-			addIntoYml(appFilePath, "dataSource.dbName", "param");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.println(getYmlMap().get("logger")==null);
 	}
 
 	public static Map<String, Object> removeMap(Map<String, Object> dataMap, String key) {

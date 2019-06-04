@@ -11,6 +11,8 @@ import java.io.OutputStream;
 import java.util.Map;
 import java.util.Properties;
 
+import com.alibaba.fastjson.JSON;
+
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -21,14 +23,21 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class LoadProperties {
-	private static String PROP_PATH="src/main/resources/JDBCProperties.properties";
-	public static void setPropPath(String propPath) {
-		PROP_PATH=propPath;
+//	private static String PROP_PATH="src/main/resources/JDBCProperties.properties";
+	private static String PROP_PATH = "JDBCProperties.properties";
+	public static void main(String[] args) {
+		System.out.println(JSON.toJSONString(getPropMap()));
 	}
+
+	public static void setPropPath(String propPath) {
+		PROP_PATH = propPath;
+	}
+	
 	public static Properties getPropMap() {
 		return getPropMap(PROP_PATH);
 	}
-	public static Properties getPropMap(String propPath){
+
+	public static Properties getPropMap(String propPath) {
 		Properties props = new Properties();
 		try {
 			props.load(new FileInputStream(propPath));
@@ -42,16 +51,17 @@ public class LoadProperties {
 		}
 		return null;
 	}
+
 	public static void updateProp(Properties prop) {
 		updateProp(prop, PROP_PATH);
 	}
-	
-	public static void updateProp(Properties prop,String propPath) {
+
+	public static void updateProp(Properties prop, String propPath) {
 		try {
 			Properties props = new Properties();
 			props.load(new FileInputStream(propPath));
 			OutputStream fos = new FileOutputStream(propPath);
-			props=prop;
+			props = prop;
 			props.store(fos, "Update value");
 			fos.close();
 		} catch (IOException e) {
@@ -64,16 +74,13 @@ public class LoadProperties {
 	 * 功能描述：
 	 *
 	 * @author: zheng
-	 * @param isResources    是否是根据默认路径查找
 	 * @param propertiesPath 配置文件路径
 	 * @return
 	 */
-	public static Map<Object, Object> GetDBDefaultSet(Boolean isResources, String propertiesPath) {
+	public static Map<Object, Object> GetDBDefaultSet(String propertiesPath) {
 		try {
-			if (propertiesPath == null || propertiesPath.equals("")) {
-				propertiesPath = "src/main/resources/JDBCProperties.properties";
-			} else if (isResources == null || isResources) {
-				propertiesPath = "src/main/resources/" + propertiesPath;
+			if (propertiesPath == null) {
+				propertiesPath = PROP_PATH;
 			}
 			File f = new File(propertiesPath);
 			if (!f.exists()) {

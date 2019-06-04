@@ -1,6 +1,5 @@
 package com.zheng.tool;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -11,8 +10,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.zheng.utils.common.ResultData;
-import com.zheng.utils.file.FileDownUtils;
-import com.zheng.utils.file.FileNameUtils;
+import com.zheng.utils.dataUtil.FileNameUtils;
+import com.zheng.utils.file.action.FileReadAndWrite;
 
 public class ReptileByJousp {
 	public  static String titleTrim(String title) {
@@ -86,13 +85,13 @@ public class ReptileByJousp {
 				public void run() {
 						String url=e.attr("abs:src");
 						if(url!=null&&!url.equals("")&&!url.endsWith("248x355.jpg")) {
-							FileDownUtils.downUrlFileAndNameByTime(url, filePath);
+							FileReadAndWrite.downUrlFileAndNameByTime(url, filePath);
 						}
 				}
 			}.run();
 			Map<String,String> data=e.dataset();
 			for(String a:data.values()) {
-				FileDownUtils.downUrlFileAndNameByTime(a, filePath);
+				FileReadAndWrite.downUrlFileAndNameByTime(a, filePath);
 				//需要验证是否为图片
 			}
 		}

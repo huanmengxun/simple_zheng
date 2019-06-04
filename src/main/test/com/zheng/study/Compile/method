@@ -1,0 +1,6 @@
+-- java的编译以及反编译 https://blog.csdn.net/u011479200/article/details/80019827 
+	
+method1: javap JAVA.class
+method2: jad.exe Decompilation.class   -- need download jad
+method3: java -jar cfr_0_125.jar Decompilation.class --decodestringswitch false
+ -- need cfr support

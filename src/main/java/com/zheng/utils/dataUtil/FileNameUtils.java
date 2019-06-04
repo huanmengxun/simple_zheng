@@ -1,9 +1,12 @@
-package com.zheng.utils.file;
+package com.zheng.utils.dataUtil;
 
 import java.io.File;
 import java.util.Date;
 
+import org.apache.commons.lang3.time.DateUtils;
+
 import com.zheng.localProperties.Constants;
+import com.zheng.utils.mylog.MyLoggerInfo;
 
 /**
  * 功能描述：和文件名有关的一些方法
@@ -11,8 +14,27 @@ import com.zheng.localProperties.Constants;
  * @Package: com.zheng.utils.file 
  * @author: zheng  
  */
+//https://www.cnblogs.com/ryelqy/p/10104171.html
 public class FileNameUtils {
-	
+	public static void main(String[] args) {
+		System.out.println(getFileSuffix("1.txt"));
+	}
+	/**
+	 * 功能描述：获取文件后缀
+	 *
+	 * @author: zheng  
+	 * @param fileName 文件名称
+	 * @return
+	 */
+	public static String getFileSuffix(String fileName) {
+		int lastPoint=fileName.lastIndexOf(".");
+		if(lastPoint==-1) {
+			return "";
+		}else {
+			return fileName.substring(lastPoint);
+		}
+	}
+
 	/**
 	 * 文件类型划分||作为后期的文件名定义则用
 	 * 
@@ -21,9 +43,9 @@ public class FileNameUtils {
 	 * @return
 	 */
 	public static String getFileLogType(String type, String orgFilePath) {
-		return Constants.TimeConstant.SDF.format(new Date()) + ":" + orgFilePath + File.separator + "copyFile.log";
+		return Constants.TimeConstantFormatter.format(new Date(),Constants.TimeConstantFormatter.DATE_PATTERN) + ":" + orgFilePath + File.separator + "copyFile.log";
 	}
-	
+
 	public  static String getTimeName(String oldFilePath,String newPath) {
 		String fileName="";
 		int lastPoint=oldFilePath.lastIndexOf(".");
