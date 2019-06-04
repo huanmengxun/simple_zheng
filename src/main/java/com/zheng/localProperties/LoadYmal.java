@@ -21,8 +21,8 @@ import org.yaml.snakeyaml.Yaml;
 public class LoadYmal {
 
 	private final static DumperOptions OPTIONS = new DumperOptions();
-//	private static String APP_FILE_PATH = "src/main/resources/zhengApplication.yml";
-	private static String APP_FILE_PATH = "zhengApplication.yml";
+	private static String APP_FILE_PATH = "src/main/resources/zhengApplication.yml";
+//	private static String APP_FILE_PATH = "zhengApplication.yml";
 	static {
 		// 将默认读取的方式设置为块状读取
 		OPTIONS.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);

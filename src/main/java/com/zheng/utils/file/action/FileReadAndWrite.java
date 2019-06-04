@@ -37,7 +37,7 @@ public class FileReadAndWrite {
 		newFile.getParentFile().mkdirs();
 		try (FileWriter fw = new FileWriter(newFile,isLevelOrgin)) {
 			for (String s : string) {
-				fw.write("\t" + s + "\r\n");
+				fw.write("\t" + s + "\r\n\r\n");
 			}
 //			log.info("{}文件写入成功", file);
 		} catch (IOException e) {

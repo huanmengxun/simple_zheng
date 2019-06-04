@@ -1,45 +1,51 @@
 package com.zheng;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
-import com.alibaba.fastjson.JSON;
-import com.google.common.base.Optional;
 import com.zheng.utils.dataUtil.DataBaseConn;
 import com.zheng.utils.dataUtil.DataBaseOperator;
 import com.zheng.utils.mylog.MyLoggerInfo;
 
-import lombok.Data;
-
 public class AppTest {
 	static MyLoggerInfo log = MyLoggerInfo.getInstance();
 
+	public static void exportSqlTOLocalSunhe() {
+		String[] sunheTables = {"sys_user","total_user","sys_org","sys_user_org","sys_role" ,"sys_user_role"};
+		exportSql("孙河用户建表语句", sunheTables);
+		
+	}
 	public static void exportSqlTOLocal() {
 		File f=new File("F://北科数据");
 		f.mkdirs();
-		String[] baseTables = { "base_codes", "base_datas", "base_hobby", "base_peoplestate", "base_shorturl",
-				"base_tuser_group", "bkcc_file", "base_job", "base_job_log", "s_city", "s_community", "s_district",
-				"s_grid", "s_province", "s_street", "slpt_service", "slpt_serviceannex", "slpt_filelink", "sys_script",
-				"node_input_field", "bpm_form_table", "bpm_form_rights", "bpm_form_field", "bpm_form_def",
-				"wechatapp_server", "wechatapp_userinfo" };
-		exportSql("base", baseTables);
-		String[] ucTables = { "total_user", "total_user_third" };
-		exportSql("uc", ucTables);
-		String[] upmsTables = { "base_org", "sys_org", "sys_position", "sys_res", "sys_role", "sys_role_res",
-				"sys_subsystem", "sys_desk_set", "sys_user", "sys_user_menu", "sys_user_org", "sys_user_pos",
-				"sys_user_baseorg", "sys_user_spaceid", "sys_user_role", "upms_community_res", "sys_company",
-				"sys_user_privileges", "user_res_conf" };
-		exportSql("upms", upmsTables);
+//		String[] baseTables = { "base_codes", "base_datas", "base_hobby", "base_peoplestate", "base_shorturl",
+//				"base_tuser_group", "bkcc_file", "base_job", "base_job_log", "s_city", "s_community", "s_district",
+//				"s_grid", "s_province", "s_street", "slpt_service", "slpt_serviceannex", "slpt_filelink", "sys_script",
+//				"node_input_field", "bpm_form_table", "bpm_form_rights", "bpm_form_field", "bpm_form_def",
+//				"wechatapp_server", "wechatapp_userinfo" };
+//		exportSql("base", baseTables);
+//		String[] ucTables = { "total_user", "total_user_third" };
+//		exportSql("uc", ucTables);
+//		String[] upmsTables = { "base_org", "sys_org", "sys_position", "sys_res", "sys_role", "sys_role_res",
+//				"sys_subsystem", "sys_desk_set", "sys_user", "sys_user_menu", "sys_user_org", "sys_user_pos",
+//				"sys_user_baseorg", "sys_user_spaceid", "sys_user_role", "upms_community_res", "sys_company",
+//				"sys_user_privileges", "user_res_conf" };
+//		exportSql("upms", upmsTables);
+//		String[] oaTables = { "sys_project", "sys_project_history", "sys_work_condition", "sys_version",
+//				"slpt_acceptance", "slpt_comattend", "office_supplies", "office_detail", "input_store", "meeting_room",
+//				"meeting_hasPublish", "meeting_equipment", "meeting_apply_equipment", "meeting_apply",
+//				"budget_template", "sys_calendar", "oa_attendancedata", "wechat_clockdata", "oa_mobilelog", "oa_mqlog",
+//				"oa_procedure" };
+//		exportSql("oa", oaTables);
+		
+
 		String[] oaTables = { "sys_project", "sys_project_history", "sys_work_condition", "sys_version",
 				"slpt_acceptance", "slpt_comattend", "office_supplies", "office_detail", "input_store", "meeting_room",
 				"meeting_hasPublish", "meeting_equipment", "meeting_apply_equipment", "meeting_apply",
@@ -105,9 +111,37 @@ public class AppTest {
 	
 	public static void main(String[] args) throws Exception {
 		DataBaseConn.CONN = DataBaseConn.getConnByProperties();
-		
+//		exportSqlTOLocalSunhe();
+//		DataBaseOperator.exportSql("F://北科数据//用户表sys_user.sql", "SYS_USER", "select UPDATEUSER,ACCOUNT,ISLOCK,STATUS,CREATEUSER,USERID,ISEXPIRED,CREATETIME,FULLNAME,PASSWORD from SYS_USER");
+//		DataBaseOperator.exportSql("F://北科数据//用户表total_user.sql", "SYS_USER", "SELECT USERID,ACCOUNT,CREATETIME,UPDATETIME FROM SYS_USER");
 //		select table_name from user_tables// 获取oracle所有表
-		System.out.println(JSON.toJSONString(DataBaseConn.query("select * from SYS_USER").get(0)));
+//		DataBaseOperator.exportSql("F://北科数据//孙河组织sys_org(需修改).sql", "SYS_ORG", "SELECT * FROM SYS_ORG");
+//		DataBaseOperator.exportSql("F://北科数据//菜单数据sys_user_role.sql", "SYS_USER_ROLE", "select USERROLEID,ROLEID,USERID,ORGNAME  from SYS_USER_ROLE");
+		DataBaseOperator.exportSql("F://北科数据//菜单数据sys_res.sql", "sys_res", "select * from sys_res where defaulturl not like 'http%' and defaulturl not like '%defid'");
+//		DataBaseOperator.exportSql("F://北科数据//孙河用户角色sys_role.sql", "SYS_ROLE", "select ROLEID,ALIAS,ROLENAME,MEMO,ALLOWDEL,ALLOWEDIT,ENABLED,ISADD,ALLOWADD,CREATEORGNAME,CREATEORGID from sys_role");
+//		DataBaseOperator.exportSql("F://北科数据//孙河用户组织关联sys_user_org（需修改）.sql", "sys_user_org", "SELECT * FROM SYS_USER_ORG");
+		
+//		DataBaseOperator.exportSql("F://北科数据//孙河用户岗位sys_position（需修改）.sql", "SYS_POSITION", "SELECT * FROM SYS_POSITION");
+		
+//		
+//		String tabledesc="SELECT t.colUMN_NAME FROM User_Tab_Cols t, User_Col_Comments t1 WHERE t.table_name = t1.table_name AND t.column_name = t1.column_name  "
+//				+ "and t1.table_name = 'SYS_POSITION'";
+////		String getAlltab="select TABLE_NAME from user_tables where table_name like 'SYS_%'"; 
+//		List<Map<String, Object>> table=DataBaseConn.query(tabledesc);
+//		StringBuilder sb=new StringBuilder();
+//		for(Map m:table) {
+//			sb.append(m.get("COLUMN_NAME"));
+//			sb.append(",");
+//		}
+//		System.out.println(sb.toString());
+		
+//		System.out.println(JSON.toJSONString(DataBaseConn.query("select * from SYS_POSITION where PARENTID = 1")));
+		
+//		String sql="select * from sys_user";
+//		System.out.println(JSON.toJSONString(DataBaseConn.getTabAllField("sys_user")));
+		
+//		select UPDATEUSER,ACCOUNT,ISLOCK,STATUS,CREATEUSER,USERID,ISEXPIRED,CREATETIME,FULLNAME,PASSWORD from SYS_USER;
+		
 //		exportSqlTOLocal();
 //		exportSqlToExcel(getResSql().toString(), "F://北科数据", "菜单");
 //		for (String tab : tables) {

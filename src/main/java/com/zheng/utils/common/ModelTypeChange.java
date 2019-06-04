@@ -4,13 +4,21 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.StringUtils;
-
-import com.alibaba.fastjson.JSON;
-import com.zheng.utils.dataUtil.model.DataBaseModel;
-
-
+/**
+ * 功能描述： model类型转换
+ * 
+ * @Package: com.zheng.utils.common
+ * @author: zheng
+ */
 public class ModelTypeChange {
+	/**
+	 * 功能描述： 将对象转为map
+	 * 
+	 * @author: zheng
+	 * @param obj 将被转为map的对象
+	 * @return
+	 * @throws IllegalAccessException
+	 */
 	public static Map<String, Object> objectToMap(Object obj) throws IllegalAccessException {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Class<?> clazz = obj.getClass();
@@ -21,17 +29,25 @@ public class ModelTypeChange {
 		}
 		return map;
 	}
-	public static Object mapToObject(Object obj,Map<String,Object> map){
+
+	/**
+	 * 功能描述：将map对象的值赋给另外一个obj对象
+	 *
+	 * @author: zheng
+	 * @param obj 装填map对象值得对象
+	 * @param map
+	 * @return
+	 */
+	public static Object mapToObject(Object obj, Map<String, Object> map) {
 		Class<?> clazz = obj.getClass();
 		for (Field field : clazz.getDeclaredFields()) {
 			field.setAccessible(true);
 			String fieldName = field.getName();
-			Object o =map.get(fieldName);
-			if(o!=null&&o.getClass().equals(field.getType().getName().getClass())) {
+			Object o = map.get(fieldName);
+			if (o != null && o.getClass().getName().equals(field.getType().getName())) {
 				try {
-					field.set(fieldName, o);
+					field.set(obj, o);
 				} catch (IllegalArgumentException e) {
-					System.out.println(")))))))))");
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
 					e.printStackTrace();
@@ -41,10 +57,4 @@ public class ModelTypeChange {
 		return obj;
 	}
 
-	public static void main(String[] args) throws IllegalAccessException {
-		Map<String,Object>m=new HashMap<>();
-		m.put("port", "1231");
-		DataBaseModel model=(DataBaseModel) mapToObject(new DataBaseModel(),m);
-		System.out.println(JSON.toJSONString(model));
-	}
 }

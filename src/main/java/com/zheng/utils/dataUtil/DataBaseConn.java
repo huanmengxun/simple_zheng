@@ -25,6 +25,7 @@ public class DataBaseConn {
 	public static String ORACLE = "ORACLE";
 	public static String H2 = "H2";
 	public static Connection CONN = null;
+	public static String DATA_TYPE= null;
 
 //	/* 查询数据库 ‘mammothcode’ 所有表注释 */
 //	SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema='mammothcode';
@@ -72,7 +73,6 @@ public class DataBaseConn {
 				log.error("未指定dataType数据库类型");
 				return null;
 			}
-			
 			if (prop.get(preFix+"dataIp") == null) {
 				log.error("未指定ip代表具体ip");
 				return null;
@@ -133,6 +133,7 @@ public class DataBaseConn {
 			portStr = ":" + port;
 		}
 		StringBuilder url=new StringBuilder();
+		DATA_TYPE=dataType;
 		switch (dataType.toUpperCase()) {
 		case "MYSQL":
 			if (portStr.equals(""))
@@ -226,9 +227,21 @@ public class DataBaseConn {
 	 */
 	public static List<String> getTabAllField(String tableName) {
 		List<String> fieldName = new ArrayList<>();
-		List<Map<String, Object>> fieldList = query("desc " + tableName);
-		for (Map<String, Object> field : fieldList) {
-			fieldName.add(field.get("Field").toString());
+		String sql="";
+		if(DATA_TYPE.toUpperCase().equals("MYSQL")){
+			sql="desc "+tableName;
+			List<Map<String, Object>> fieldList = query(sql);
+			for (Map<String, Object> field : fieldList) {
+				fieldName.add(field.get("Field").toString());
+			}
+		}else if(DATA_TYPE.toUpperCase().equals("ORACLE")) {
+			sql="SELECT t.COLUMN_NAME FROM User_Tab_Cols t, User_Col_Comments t1 WHERE t.table_name = t1.table_name AND t.column_name = t1.column_name  and t1.table_name = '"+tableName.toUpperCase()+"'";
+			List<Map<String, Object>> fieldList = query(sql);
+			for (Map<String, Object> field : fieldList) {
+				fieldName.add(field.get("COLUMN_NAME").toString());
+			}
+		}else {
+			return null;
 		}
 		return fieldName;
 	}

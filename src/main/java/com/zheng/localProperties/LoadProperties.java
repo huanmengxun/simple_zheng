@@ -23,8 +23,8 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 public class LoadProperties {
-//	private static String PROP_PATH="src/main/resources/JDBCProperties.properties";
-	private static String PROP_PATH = "JDBCProperties.properties";
+	private static String PROP_PATH="src/main/resources/JDBCProperties.properties";
+//	private static String PROP_PATH = "JDBCProperties.properties";
 	public static void main(String[] args) {
 		System.out.println(JSON.toJSONString(getPropMap()));
 	}
