@@ -1,5 +1,7 @@
 package com.zheng.study.encry;
 
+import org.junit.Test;
+
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 /*
@@ -39,8 +41,8 @@ public class BASE64 {
     public static String encryptBASE64(byte[] key) throws Exception {   
         return (new BASE64Encoder()).encodeBuffer(key);   
     }  
-
-    public static void main(String[] args) {
+    @Test
+    public static void testValite(String[] args) {
         
      String  str="12345678";
 

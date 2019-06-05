@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
+
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
@@ -24,8 +26,8 @@ import jxl.Workbook;
 import jxl.read.biff.BiffException;
 
 public class ExcelToPdf {
-
-	public static void main(String[] args) throws DocumentException, IOException {
+	@Test
+	public static void test() throws DocumentException, IOException {
 		Document document = new Document(PageSize.A4, 0, 0, 50, 0);
 		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("F:/PdfTable2.pdf"));
 

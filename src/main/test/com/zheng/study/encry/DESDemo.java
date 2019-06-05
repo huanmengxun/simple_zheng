@@ -18,6 +18,7 @@ import javax.crypto.spec.DESKeySpec;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
+import org.junit.Test;
 
 import com.zheng.utils.mylog.MyLoggerInfo;
 
@@ -136,8 +137,8 @@ public class DESDemo {
         }
     }
     
-    
-    public static void main(String[] args) {
+	@Test
+	public static void test() {
         DESDemo.jdkDES ();
         DESDemo.bcDES();
     }

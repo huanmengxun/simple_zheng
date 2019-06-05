@@ -10,6 +10,8 @@ import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.junit.Test;
+
   
 /**  
  * 基础加密组件  
@@ -91,8 +93,8 @@ public abstract class HMAC {
 //    
 
 
-    public static void main(String args[])
-    {
+	@Test
+	public static void test() {
         try {
              String inputStr = "简单加密"; 
              /*使用同一密钥：对数据进行加密：查看两次加密的结果是否一样*/

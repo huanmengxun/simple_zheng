@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
 
-import com.zheng.localProperties.Constants;
+import com.zheng.localProperties.MyConstants;
 import com.zheng.utils.mylog.MyLoggerInfo;
 
 /**
@@ -16,9 +16,6 @@ import com.zheng.utils.mylog.MyLoggerInfo;
  */
 //https://www.cnblogs.com/ryelqy/p/10104171.html
 public class FileNameUtils {
-	public static void main(String[] args) {
-		System.out.println(getFileSuffix("1.txt"));
-	}
 	/**
 	 * 功能描述：获取文件后缀
 	 *
@@ -43,7 +40,7 @@ public class FileNameUtils {
 	 * @return
 	 */
 	public static String getFileLogType(String type, String orgFilePath) {
-		return Constants.TimeConstantFormatter.format(new Date(),Constants.TimeConstantFormatter.DATE_PATTERN) + ":" + orgFilePath + File.separator + "copyFile.log";
+		return MyConstants.TimeConstantFormatter.format(new Date(),MyConstants.TimeConstantFormatter.DATE_PATTERN) + ":" + orgFilePath + File.separator + "copyFile.log";
 	}
 
 	public  static String getTimeName(String oldFilePath,String newPath) {

@@ -105,15 +105,6 @@ public class MyInternalFrameDemo extends MyDemoModule {
 	/** The window title label. */
 	JLabel windowTitleLabel = null;
 
-//	/**
-//	 * main method allows us to run as a standalone demo.
-//	 *
-//	 * @param args the arguments
-//	 */
-//	public static void main(String[] args) {
-//		MyInternalFrameDemo demo = new MyInternalFrameDemo(null);
-//		demo.mainImpl();
-//	}
 
 	/*
 	 * (non-Javadoc)

@@ -14,11 +14,11 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
-
 import javax.crypto.spec.DESedeKeySpec;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
+import org.junit.Test;
 
 import com.zheng.utils.mylog.MyLoggerInfo;
 
@@ -137,8 +137,8 @@ public static void bcTripleDES () {
     }
     
     
-    
-    public static void main(String[] args) {
+    @Test
+    public static void test() {
         jdkTripleDES ();
         bcTripleDES ();
 

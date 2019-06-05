@@ -9,7 +9,7 @@ import java.util.List;
 
 import org.apache.http.client.utils.DateUtils;
 
-import com.zheng.localProperties.Constants;
+import com.zheng.localProperties.MyConstants;
 
 import lombok.extern.log4j.Log4j2;
 

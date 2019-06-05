@@ -11,7 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.zheng.utils.dataUtil.FileNameUtils;
-import com.zheng.utils.file.action.FileReadAndWrite;
+import com.zheng.utils.file.action.MyFileUtils;
 
 public class MainTest {
 	public  static String titleTrim(String title) {
@@ -136,19 +136,19 @@ public class MainTest {
 				public void run() {
 						String url=e.attr("abs:src");
 						if(url!=null&&!url.equals("")&&!url.endsWith("248x355.jpg")) {
-							FileReadAndWrite.downUrlFileAndNameByTime(url, filePath);
+							MyFileUtils.downUrlFileAndNameByTime(url, filePath);
 						}
 				}
 			}.run();
 			Map<String,String> data=e.dataset();
 			for(String a:data.values()) {
-				FileReadAndWrite.downUrlFileAndNameByTime(a, filePath);
+				MyFileUtils.downUrlFileAndNameByTime(a, filePath);
 			}
 		}
 	}
-	public static void main(String[] args) {
-		String url="http://mmas.xyz/cfmw/12/45.html";
-		testConn(url,"next");
-	}
+//	public static void main(String[] args) {
+//		String url="http://mmas.xyz/cfmw/12/45.html";
+//		testConn(url,"next");
+//	}
 //	
 }

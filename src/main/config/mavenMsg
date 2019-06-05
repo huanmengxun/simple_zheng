@@ -1,0 +1,78 @@
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<archive>
+						<!-- 生成的jar中，不要包含pom.xml和pom.properties这两个文件 -->
+						<addMavenDescriptor>false</addMavenDescriptor>
+						<manifest>
+							<!-- 是否要把第三方jar放到manifest的classpath中 -->
+							<addClasspath>true</addClasspath>
+							<!-- 生成的manifest中classpath的前缀，因为要把第三方jar放到lib目录下，所以classpath的前缀是lib/ -->
+							<classpathPrefix>lib/</classpathPrefix>
+							<!-- 应用的main class -->
+							<mainClass>com.zheng.MyApplication</mainClass>
+							<addClasspath>true</addClasspath>
+							<classpathPrefix>src/main/lib/</classpathPrefix>
+						</manifest>
+					</archive>
+					<!-- 过滤掉不希望包含在jar中的文件 -->
+					<!-- <excludes> -->
+					<!-- <exclude>${project.basedir}/xml/*</exclude> -->
+					<!-- </excludes> -->
+					<classesDirectory>
+					</classesDirectory>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<!--这部分可有可无,加上的话则直接生成可运行jar包 -->
+					<!--<archive> -->
+					<!--<manifest> -->
+					<!--<mainClass>${exec.mainClass}</mainClass> -->
+					<!--</manifest> -->
+					<!--</archive> -->
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+					<!-- Specifies the configuration file of the assembly plugin -->
+					<!-- <descriptors> -->
+					<!-- <descriptor>src/main/assembly/package.xml</descriptor> -->
+					<!-- </descriptors> -->
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+
+
+		<!-- <resources> -->
+		<!-- <resource> -->
+		<!-- <targetPath>${project.basedir}/src/main</targetPath> -->
+		<!-- <directory>${project.basedir}/src/main</directory> -->
+		<!-- <includes> -->
+		<!-- <include>lib/*.jar</include> -->
+		<!-- <include>**/*.xml</include> -->
+		<!-- <include>**/*.ini</include> -->
+		<!-- <include>**/*.properties</include> -->
+		<!-- </includes> -->
+		<!-- </resource> -->
+		<!-- </resources> -->
+		</build>

@@ -1,9 +1,12 @@
 package com.zheng.study;
 
+import org.junit.Test;
+
 import redis.clients.jedis.Jedis;
 
 public class RedisTest {
-	public static void main(String[] args) {
+	@Test
+	public static void testConn() {
 		// 连接本地的 Redis 服务
 		Jedis jedis = new Jedis("127.0.0.1",8888);
 		System.out.println("连接成功");

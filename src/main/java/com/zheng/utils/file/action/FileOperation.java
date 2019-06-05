@@ -12,29 +12,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-import com.zheng.localProperties.Constants;
+import com.zheng.localProperties.MyConstants;
 import com.zheng.utils.dataUtil.FileNameUtils;
 import com.zheng.utils.file.FileUtils;
 import com.zheng.utils.mylog.MyLoggerInfo;
 
 public class FileOperation {
 	MyLoggerInfo log = MyLoggerInfo.getInstance();
-
-	public static void main(String[] args) {
-//		String path="F:\\img欧美";	
-//		String path="F:\\img清纯";
-//		String path="F:\\img熟女";
-//		String path="F:\\img丝袜";
-//		removeAllFileToNewFolder(path+File.separator+"-1", path+File.separator+"1");
-//		removeAllFileToNewFolder(path+File.separator+"-2", path+File.separator+"2");
-//		removeAllFileToNewFolder(path+File.separator+"-3", path+File.separator+"3");
-//		removeAllFileToNewFolder(path+File.separator+"-4", path+File.separator+"4");
-
-		removeAllFileToNewFolder("F:\\img\\image\\CG同人图1", "F:\\img\\image\\12345");
-		removeAllFileToNewFolder("F:\\img\\image\\Resign 绝对服从1", "F:\\img\\image\\123455");
-		removeAllFileToNewFolder("F:\\img\\image\\合并", "F:\\img\\image\\123455");
-
-	}
 
 	/**
 	 * 功能描述：合并文件
@@ -352,8 +336,8 @@ public class FileOperation {
 					 * 记录替换信息日志
 					 */
 
-					fw.write(Constants.TimeConstantFormatter.format(new Date(),
-							Constants.TimeConstantFormatter.TIME_PATTERN) + "-oldName:" + subF.getName() + "-newName:"
+					fw.write(MyConstants.TimeConstantFormatter.format(new Date(),
+							MyConstants.TimeConstantFormatter.TIME_PATTERN) + "-oldName:" + subF.getName() + "-newName:"
 							+ newName + "\r\n");
 					subF.renameTo(new File(subF.getParent() + File.separator + newName));
 					if (subF.isDirectory()) {

@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.junit.Test;
+
 import com.alibaba.fastjson.JSON;
 //https://blog.csdn.net/u011097980/article/details/53939288
 public class BitTorrents {
@@ -93,8 +95,8 @@ public class BitTorrents {
         }
         return btInfo;
     }
- 
-    public static void main(String[] args) throws Exception {
+    @Test
+    public static void parseTest() throws Exception {
     	BitTorrentInfo info=parse("C:\\Users\\nike\\Downloads\\惊奇队长.Captain.Marvel.2019.720p.WEB-DL.DD5.1.H264-英语中字-BT601.torrent");
     	System.out.println(JSON.toJSONString(info));
 //        System.out.println("信息:"+info.getAnnounce()+"\t"+info.getComment()+"\t"+info.getCreateBy()+"\t"+GetDate.LongConvetDateTime(info.getCreationDate()));

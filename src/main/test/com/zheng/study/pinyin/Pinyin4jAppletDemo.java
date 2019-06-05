@@ -18,6 +18,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
+import org.junit.Test;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
@@ -368,8 +370,9 @@ public class Pinyin4jAppletDemo extends JApplet {
 		}
 		return unformattedGwoyeuRomatzyhScrollPane;
 	}
-
-	static public void main(String argv[]) {
+	
+	@Test
+	static public void pinyinAppletShow(String argv[]) {
 		final Pinyin4jAppletDemo appletDemo = new Pinyin4jAppletDemo();
 
 //		System.runFinalizersOnExit(true);

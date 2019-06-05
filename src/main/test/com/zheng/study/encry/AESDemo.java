@@ -4,7 +4,6 @@ import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
-import java.security.SecureRandom;
 import java.security.Security;
 
 import javax.crypto.BadPaddingException;
@@ -17,6 +16,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
+import org.junit.Test;
 
 public class AESDemo {
     
@@ -123,11 +123,10 @@ public class AESDemo {
     
     }
     
-
-    public static void main(String[] args) {
+    @Test
+    public static void test() {
         jdkAES();
         bcAES();
-
     }
 
 }

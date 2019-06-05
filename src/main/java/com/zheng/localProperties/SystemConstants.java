@@ -9,10 +9,6 @@ public class SystemConstants {
 		USER_HOME=props.getProperty("user.home");
 	}
 	
-	public static void main(String[] args) {
-//		System.out.println(USER_HOME);
-		test();
-	}
 	public static void test() {
 		Properties props = System.getProperties(); // 系统属性
 		System.out.println("常用换行符, 路径分隔符,文件分隔符:");

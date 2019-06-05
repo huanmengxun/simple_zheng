@@ -3,6 +3,8 @@ package com.zheng.study.encry;
 
 import java.io.IOException;
 
+import org.junit.Test;
+
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
@@ -12,7 +14,8 @@ public class Base64Demo {
     private static String src = "TestBase64";
     
 
-    public static void main(String[] args) {
+	@Test
+	public static void test() {
         Base64Demo.jdkBase64();
         Base64Demo.commonsCodecBase64 ();
         Base64Demo.bouncyCastleBase64 ();

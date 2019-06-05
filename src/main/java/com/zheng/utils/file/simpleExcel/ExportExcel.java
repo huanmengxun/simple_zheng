@@ -16,16 +16,12 @@ import java.util.Map;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
-import com.zheng.utils.dataUtil.DataBaseOperator;
-import com.zheng.utils.dataUtil.DataBaseConn;
+import com.zheng.utils.dataUtil.MyDataBaseOperator;
+import com.zheng.utils.dataUtil.MyDataBaseConn;
 import com.zheng.utils.mylog.MyLoggerInfo;
 
 public class ExportExcel {
 	static MyLoggerInfo log = MyLoggerInfo.getInstance();
-	public static void main(String[] args) throws Exception {
-		exportSqlToExcel("show tables", "F://", "test");
-		log.debug("测试进行中");
-	}
 	/**
 	 * 功能描述：
 	 *
@@ -37,7 +33,7 @@ public class ExportExcel {
 	 * @throws Exception 
 	 */
 	public static void exportSqlToExcel(String sql, String filePath,String fileName) throws Exception {
-		Map<String, List<?>> result = DataBaseOperator.getExcelData(sql);
+		Map<String, List<?>> result = MyDataBaseOperator.getExcelData(sql);
 		if(result==null) {
 			log.error("存在错误");
 			return;

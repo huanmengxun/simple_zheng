@@ -3,6 +3,8 @@ package com.zheng.study.encry;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
+import org.junit.Test;
+
 /*
 SHA(Secure Hash Algorithm，安全散列算法），数字签名等密码学应用中重要的工具，
 被广泛地应用于电子商务等信息安全领域。虽然，SHA与MD5通过碰撞法都被破解了， 
@@ -13,7 +15,7 @@ public class SHA {
 	public static String getResult(String inputStr) {
 		BigInteger sha = null;
 		System.out.println("=======加密前的数据:" + inputStr);
-		String result="";
+		String result = "";
 		byte[] inputData = inputStr.getBytes();
 		try {
 			MessageDigest messageDigest = MessageDigest.getInstance(KEY_SHA);
@@ -28,7 +30,8 @@ public class SHA {
 		return result;
 	}
 
-	public static void main(String args[]) {
+	@Test
+	public static void test() {
 		try {
 			String inputStr = "简单加密";
 			getResult(inputStr);

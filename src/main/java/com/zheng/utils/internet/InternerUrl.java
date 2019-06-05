@@ -6,7 +6,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-import lombok.extern.log4j.Log4j2;
+import com.zheng.utils.mylog.MyLoggerInfo;
 
 /**
  * 功能描述：网络连接的处理
@@ -14,8 +14,8 @@ import lombok.extern.log4j.Log4j2;
  * @Package: com.zheng.utils.internet
  * @author: zheng
  */
-@Log4j2
 public class InternerUrl {
+	static MyLoggerInfo log=MyLoggerInfo.getInstance();
 	/**
 	 * 功能描述：获取绝对路径
 	 *

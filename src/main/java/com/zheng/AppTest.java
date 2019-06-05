@@ -10,8 +10,8 @@ import java.util.Map;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
-import com.zheng.utils.dataUtil.DataBaseConn;
-import com.zheng.utils.dataUtil.DataBaseOperator;
+import com.zheng.utils.dataUtil.MyDataBaseConn;
+import com.zheng.utils.dataUtil.MyDataBaseOperator;
 import com.zheng.utils.mylog.MyLoggerInfo;
 
 public class AppTest {
@@ -61,7 +61,7 @@ public class AppTest {
 	 * @date: 2019年6月3日 下午5:39:37
 	 */
 	public static  void exportSql(String fileNames,String... tables) {
-		List<String> sqlString = DataBaseOperator.exportCreateTab(tables);
+		List<String> sqlString = MyDataBaseOperator.exportCreateTab(tables);
 		File file = new File("F://北科数据//"+fileNames+".sql");
 		try (FileWriter fw = new FileWriter(file)) {
 			for (String sql : sqlString) {
@@ -86,7 +86,7 @@ public class AppTest {
 	}
 	
 	public static void exportSqlToExcel(String sql, String filePath,String fileName) throws Exception {
-		Map<String, List<?>> result = DataBaseOperator.getExcelData(sql);
+		Map<String, List<?>> result = MyDataBaseOperator.getExcelData(sql);
 		File path=new File(filePath);
 		if(!path.exists()) {
 			throw new Exception("所选目录不存在");
@@ -110,14 +110,14 @@ public class AppTest {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		DataBaseConn.CONN = DataBaseConn.getConnByProperties();
+		MyDataBaseConn.CONN = MyDataBaseConn.getConnByProperties();
 //		exportSqlTOLocalSunhe();
 //		DataBaseOperator.exportSql("F://北科数据//用户表sys_user.sql", "SYS_USER", "select UPDATEUSER,ACCOUNT,ISLOCK,STATUS,CREATEUSER,USERID,ISEXPIRED,CREATETIME,FULLNAME,PASSWORD from SYS_USER");
 //		DataBaseOperator.exportSql("F://北科数据//用户表total_user.sql", "SYS_USER", "SELECT USERID,ACCOUNT,CREATETIME,UPDATETIME FROM SYS_USER");
 //		select table_name from user_tables// 获取oracle所有表
 //		DataBaseOperator.exportSql("F://北科数据//孙河组织sys_org(需修改).sql", "SYS_ORG", "SELECT * FROM SYS_ORG");
 //		DataBaseOperator.exportSql("F://北科数据//菜单数据sys_user_role.sql", "SYS_USER_ROLE", "select USERROLEID,ROLEID,USERID,ORGNAME  from SYS_USER_ROLE");
-		DataBaseOperator.exportSql("F://北科数据//菜单数据sys_res.sql", "sys_res", "select * from sys_res where defaulturl not like 'http%' and defaulturl not like '%defid'");
+		MyDataBaseOperator.exportSql("F://北科数据//菜单数据sys_res.sql", "sys_res", "select * from sys_res where defaulturl not like 'http%' and defaulturl not like '%defid'");
 //		DataBaseOperator.exportSql("F://北科数据//孙河用户角色sys_role.sql", "SYS_ROLE", "select ROLEID,ALIAS,ROLENAME,MEMO,ALLOWDEL,ALLOWEDIT,ENABLED,ISADD,ALLOWADD,CREATEORGNAME,CREATEORGID from sys_role");
 //		DataBaseOperator.exportSql("F://北科数据//孙河用户组织关联sys_user_org（需修改）.sql", "sys_user_org", "SELECT * FROM SYS_USER_ORG");
 		

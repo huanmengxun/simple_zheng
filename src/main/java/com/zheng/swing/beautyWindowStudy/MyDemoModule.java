@@ -331,15 +331,6 @@ public class MyDemoModule extends JApplet {
 		return p;
 	}
 
-	/**
-	 * The main method.
-	 *
-	 * @param args the arguments
-	 */
-	public static void main(String[] args) {
-		MyDemoModule demo = new MyDemoModule(null);
-		demo.mainImpl();
-	}
 
 	/*
 	 * (non-Javadoc)

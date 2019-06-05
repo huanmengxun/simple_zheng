@@ -25,7 +25,8 @@ import jxl.read.biff.BiffException;
 
 
 public class ExcelToPdf {
-	public static void main(String[] args) throws DocumentException, IOException {  
+	
+	public static void test() throws DocumentException, IOException {  
         Document document = new Document(PageSize.A4,0,0,50,0);  
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("F:/PdfTable2.pdf"));  
           

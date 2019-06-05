@@ -3,6 +3,8 @@ package com.zheng.study.encry;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 
+import org.junit.Test;
+
 import com.zheng.utils.mylog.MyLoggerInfo;
 
 /*
@@ -31,7 +33,8 @@ public class MD5 {
 		return result;
 	}
 
-	public static void main(String args[]) {
+	@Test
+	public static void test() {
 		try {
 			String inputStr = "简单加密8888888888888888888";
 			getResult(inputStr);

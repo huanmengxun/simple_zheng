@@ -73,6 +73,7 @@ import javax.swing.plaf.metal.OceanTheme;
 import org.jb2011.lnf.beautyeye.BeautyEyeLNFHelper;
 import org.jb2011.lnf.beautyeye.widget.N9ComponentFactory;
 
+import com.zheng.swing.SwingSetBaseApplet;
 import com.zheng.swing.SwingTheme.AquaTheme;
 import com.zheng.swing.SwingTheme.CharcoalTheme;
 import com.zheng.swing.SwingTheme.ContrastTheme;
@@ -109,22 +110,11 @@ public class MySwingEntry extends JPanel {
 		}
 	}
 
-	// Possible Look & Feels
-	// private static final String mac =
-	// "com.sun.java.swing.plaf.mac.MacLookAndFeel";
-	/** The Constant metal. */
-	private static final String metal = "javax.swing.plaf.metal.MetalLookAndFeel";
-	// private static final String motif =
-	// "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
-	/** The Constant windows. */
-	private static final String windows = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
 
-	/** The Constant gtk. */
-	private static final String gtk = "org.jb2011.lnf.windows2.Windows2LookAndFeel";
 
 	// The current Look & Feel
 	/** The current look and feel. */
-	private static String currentLookAndFeel = metal;
+	private static String currentLookAndFeel = SwingSetBaseApplet.metal;
 
 	// List of demos
 	/** The demos list. */
@@ -284,33 +274,12 @@ public class MySwingEntry extends JPanel {
 		demoLoader.start();
 	}
 
-	/**
-	 * MySwingSet Main. Called only if we're an application, not an applet.
-	 *
-	 * @param args the arguments
-	 * @throws Exception the exception
-	 */
-	public static void main(String[] args) throws Exception {
-		// Create SwingSet on the default monitor
-//		BeautyEyeLNFHelper.frameBorderStyle = 
-//			BeautyEyeLNFHelper.FrameBorderStyle.osLookAndFeelDecorated;
-////		UIManager.setLookAndFeel(BeautyEyeLNFHelper.getBeautyEyeLNFCrossPlatform());//new WindowsLookAndFeel());
-//		UIManager.put("RootPane.setupButtonVisible", false);
-		BeautyEyeLNFHelper.debug = true;
-//		BeautyEyeLNFHelper.translucencyAtFrameInactive = false;
-		BeautyEyeLNFHelper.launchBeautyEyeLNF();
-//		UIManager.put("ToolBar.border",new BorderUIResource(
-//				new org.jb2011.lnf.beautyeye.ch8_toolbar.BEToolBarUI.ToolBarBorder(UIManager.getColor("ToolBar.shadow"),
-//						UIManager.getColor("ToolBar.highlight"), new Insets(6, 0, 0, 0))));
-
-//		JFrame.setDefaultLookAndFeelDecorated(true);
-//		JDialog.setDefaultLookAndFeelDecorated(true);
-//		UIManager.setLookAndFeel(new MetalLookAndFeel());
-//		UIManager.setLookAndFeel(new WindowsLookAndFeel());
-
-		MySwingEntry swingset = new MySwingEntry(null,
-				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
-	}
+//	public static void main(String[] args) throws Exception {
+//		BeautyEyeLNFHelper.debug = true;
+//		BeautyEyeLNFHelper.launchBeautyEyeLNF();
+//		MySwingEntry swingset = new MySwingEntry(null,
+//				GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDefaultConfiguration());
+//	}
 
 	// *******************************************************
 	// *************** Demo Loading Methods ******************
@@ -466,13 +435,13 @@ public class MySwingEntry extends JPanel {
 			lafMenu.getAccessibleContext().setAccessibleDescription(getString("LafMenu.laf_accessible_description"));
 
 			mi = createLafMenuItem(lafMenu, "LafMenu.java_label", "LafMenu.java_mnemonic",
-					"LafMenu.java_accessible_description", metal);
+					"LafMenu.java_accessible_description", SwingSetBaseApplet.metal);
 			mi.setSelected(true); // this is the default l&f
 
 			createLafMenuItem(lafMenu, "LafMenu.windows_label", "LafMenu.windows_mnemonic",
-					"LafMenu.windows_accessible_description", windows);
+					"LafMenu.windows_accessible_description", SwingSetBaseApplet.windows);
 			createLafMenuItem(lafMenu, "LafMenu.gtk_label", "LafMenu.gtk_mnemonic",
-					"LafMenu.gtk_accessible_description", gtk);
+					"LafMenu.gtk_accessible_description", SwingSetBaseApplet.gtk);
 
 			// ***** create themes menu
 			themesMenu = (JMenu) menuBar.add(new JMenu(getString("ThemesMenu.themes_label")));
@@ -732,13 +701,13 @@ public class MySwingEntry extends JPanel {
 		JPopupMenu popup = new JPopupMenu("JPopupMenu demo");
 
 		createPopupMenuItem(popup, "LafMenu.java_label", "LafMenu.java_mnemonic", "LafMenu.java_accessible_description",
-				metal);
+				SwingSetBaseApplet.metal);
 
 		createPopupMenuItem(popup, "LafMenu.windows_label", "LafMenu.windows_mnemonic",
-				"LafMenu.windows_accessible_description", windows);
+				"LafMenu.windows_accessible_description", SwingSetBaseApplet.windows);
 
 		createPopupMenuItem(popup, "LafMenu.gtk_label", "LafMenu.gtk_mnemonic", "LafMenu.gtk_accessible_description",
-				gtk);
+				SwingSetBaseApplet.gtk);
 
 		// register key binding to activate popup menu
 		InputMap map = getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -1132,14 +1101,14 @@ public class MySwingEntry extends JPanel {
 			 * and will be replaced in future version of MySwingSet demo.
 			 */
 			String lafName = null;
-			if (laf == metal)
+			if (laf == SwingSetBaseApplet.metal)
 				lafName = getString("LafMenu.java_label");
-			if (laf == gtk)
+			if (laf == SwingSetBaseApplet.gtk)
 				lafName = getString("LafMenu.gtk_label");
-			if (laf == windows)
+			if (laf == SwingSetBaseApplet.windows)
 				lafName = getString("LafMenu.windows_label");
 
-			themesMenu.setEnabled(laf == metal);
+			themesMenu.setEnabled(laf == SwingSetBaseApplet.metal);
 			updateLookAndFeel();
 			for (int i = 0; i < lafMenu.getItemCount(); i++) {
 				JMenuItem item = lafMenu.getItem(i);
