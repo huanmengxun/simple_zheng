@@ -13,7 +13,7 @@ import java.util.Map;
 
 import com.zheng.localProperties.LoadMyProperties;
 import com.zheng.localProperties.LoadMyYmal;
-import com.zheng.localProperties.MyConstants;
+import com.zheng.localProperties.commons.MyConstants;
 import com.zheng.utils.dataUtil.model.MyDataBaseModel;
 import com.zheng.utils.mylog.MyLoggerInfo;
 
@@ -29,16 +29,18 @@ public class MyDataBaseConn {
 //	SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema='mammothcode';
 	
 	static {
-		if (CONN == null) {
-			CONN = MyDataBaseConn.getConnByYml();
-		}
+//		if (CONN == null) {
+//			CONN = MyDataBaseConn.getConnByYml();
+//		}
 	}
-
-
-
+	/**
+	 * 功能描述：根据默认配置文件获取连接
+	 *
+	 * @author: zheng  
+	 * @return
+	 */
 	public static Connection getConnByYml() {
-		Map<String, Object> ymlMap = LoadMyYmal.getYmlMap();
-		Object obj = ymlMap.get("dataSource.master");
+		Object obj = LoadMyYmal.getConfigValueByKey("dataSource.master");
 		if (obj != null && obj instanceof Map) {
 			return getConnByMap((Map<String, Object>) obj);
 		} else {
@@ -57,7 +59,7 @@ public class MyDataBaseConn {
 	 * @return
 	 */
 	public static Connection getConnByProperties(String propertiesPath) {
-		Map<Object, Object> prop = LoadMyProperties.GetDBDefaultSet(null);
+		Map<Object, Object> prop = LoadMyProperties.getConfigMsg();
 		return getConnByMap(prop,"sql."+prop.get("sql.master")+".");
 	}
 

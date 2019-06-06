@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.apache.commons.lang3.time.DateUtils;
 
-import com.zheng.localProperties.MyConstants;
+import com.zheng.localProperties.commons.MyConstants;
 import com.zheng.utils.mylog.MyLoggerInfo;
 
 /**

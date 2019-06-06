@@ -1,9 +1,6 @@
 package com.zheng.utils.mylog;
 
-import java.time.LocalDate;
 import java.util.Map;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * 功能描述： 自己写的日志类 //https://www.cnblogs.com/zhaoyan001/p/6365064.html //单例
@@ -15,8 +12,9 @@ import java.util.stream.Stream;
 
 public class MyLoggerInfo {
 	private static volatile MyLoggerInfo singleton;
-
+	
 	private MyLoggerInfo() {
+		
 	}
 
 	public static MyLoggerInfo getInstance() {

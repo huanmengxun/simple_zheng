@@ -17,6 +17,9 @@ public class MyDataBaseOperator {
 	public static void exportSql(String exportFile, String tableName, String sql) {
 		MyFileUtils.writeAppointFile(exportFile, genExportSql(tableName, sql));
 	}
+	public static void exportSql(String exportFile, String tableName, String sql,boolean flag) {
+		MyFileUtils.writeAppointFile(exportFile, genExportSql(tableName, sql),flag);
+	}
 	
 	/**
 	 * 功能描述：

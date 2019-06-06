@@ -1,10 +1,8 @@
-package com.zheng.localProperties;
+package com.zheng.localProperties.commons;
 
+import java.io.File;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -17,6 +15,33 @@ import org.apache.commons.lang3.time.DateUtils;
  * @date: 2019年5月18日 上午12:41:40
  */
 public class MyConstants {
+	/**
+	 * 指定配置文件路径
+	 */
+	private static String APPOINT_FILEPATH = "src/main/";
+	/**
+	 * 本地配置
+	 */
+	private static String localConfig = null;
+	/**
+	 * 本地静态资源
+	 */
+	private static String localStaticResources = null;
+
+	public synchronized static String getConfigPath() {
+		if (localConfig == null) {
+			localConfig = new File(APPOINT_FILEPATH + "config").getAbsolutePath() + File.separator;
+		}
+		return localConfig;
+	}
+
+	public synchronized static String getLocalStaticResourcesPath() {
+		if (localStaticResources == null) {
+			localStaticResources = new File(APPOINT_FILEPATH + "/resources/static").getAbsolutePath() + File.separator;
+		}
+		return localStaticResources;
+	}
+
 	/**
 	 * 功能描述：常见正则
 	 * 
@@ -208,22 +233,23 @@ public class MyConstants {
 	}
 
 	public static class TimeConstantFormatter {
-		public static final String DATE_PATTERN="yyyy-MM-dd";
-		public static final String TIME_PATTERN="yyyy-MM-dd HH:mm:ss";
-		public static final String HOUR_PATTERN="HH:mm:ss";
-		
+		public static final String DATE_PATTERN = "yyyy-MM-dd";
+		public static final String TIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+		public static final String HOUR_PATTERN = "HH:mm:ss";
+
 		public static String getDayFormat() {
 			return DateFormatUtils.format(new Date(), DATE_PATTERN);
 		}
-		
+
 		public static String getTimeFormat() {
 			return DateFormatUtils.format(new Date(), TIME_PATTERN);
 		}
-		
-		public static String format(Date date,String pattern) {
+
+		public static String format(Date date, String pattern) {
 			return DateFormatUtils.format(date, DATE_PATTERN);
 		}
-		public static Date parse(String date,String pattern) {
+
+		public static Date parse(String date, String pattern) {
 			try {
 				return DateUtils.parseDate(date, DATE_PATTERN);
 			} catch (ParseException e) {

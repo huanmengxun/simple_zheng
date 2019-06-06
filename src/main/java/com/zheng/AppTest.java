@@ -111,13 +111,22 @@ public class AppTest {
 	
 	public static void main(String[] args) throws Exception {
 		MyDataBaseConn.CONN = MyDataBaseConn.getConnByProperties();
+		
+		MyDataBaseOperator.exportSql("F://科立数据//ceshi2.sql", "slpt_service", "select * from slpt_service where servicename like '申请开票单'");
+		MyDataBaseOperator.exportSql("F://科立数据//ceshi2.sql", "bpm_form_table", "select * from bpm_form_table where tableid in (select tableid from slpt_service where servicename like '申请开票单') or maintableid in (select tableid from slpt_service where servicename like '申请开票单')",true);
+		MyDataBaseOperator.exportSql("F://科立数据//ceshi2.sql", "bpm_form_field", " select * from bpm_form_field where tableid in (select tableid from slpt_service where servicename like '申请开票单' union  select tableid from bpm_form_table where maintableid in (select tableid from slpt_service where servicename like '申请开票单')) ",true);
+		
+//		MyDataBaseOperator.exportSql("F://科立数据//gz.sql", "w_gzsp", "select * from w_gzsp where id = 4437916717810688");
+//		MyDataBaseOperator.exportSql("F://科立数据//gz.sql", "w_gzspzb", "select * from w_gzspzb where pid = 4437916717810688",true);
+//		
+
 //		exportSqlTOLocalSunhe();
 //		DataBaseOperator.exportSql("F://北科数据//用户表sys_user.sql", "SYS_USER", "select UPDATEUSER,ACCOUNT,ISLOCK,STATUS,CREATEUSER,USERID,ISEXPIRED,CREATETIME,FULLNAME,PASSWORD from SYS_USER");
 //		DataBaseOperator.exportSql("F://北科数据//用户表total_user.sql", "SYS_USER", "SELECT USERID,ACCOUNT,CREATETIME,UPDATETIME FROM SYS_USER");
 //		select table_name from user_tables// 获取oracle所有表
 //		DataBaseOperator.exportSql("F://北科数据//孙河组织sys_org(需修改).sql", "SYS_ORG", "SELECT * FROM SYS_ORG");
 //		DataBaseOperator.exportSql("F://北科数据//菜单数据sys_user_role.sql", "SYS_USER_ROLE", "select USERROLEID,ROLEID,USERID,ORGNAME  from SYS_USER_ROLE");
-		MyDataBaseOperator.exportSql("F://北科数据//菜单数据sys_res.sql", "sys_res", "select * from sys_res where defaulturl not like 'http%' and defaulturl not like '%defid'");
+//		MyDataBaseOperator.exportSql("F://北科数据//菜单数据sys_res.sql", "sys_res", "select * from sys_res where defaulturl not like 'http%' and defaulturl not like '%defid'");
 //		DataBaseOperator.exportSql("F://北科数据//孙河用户角色sys_role.sql", "SYS_ROLE", "select ROLEID,ALIAS,ROLENAME,MEMO,ALLOWDEL,ALLOWEDIT,ENABLED,ISADD,ALLOWADD,CREATEORGNAME,CREATEORGID from sys_role");
 //		DataBaseOperator.exportSql("F://北科数据//孙河用户组织关联sys_user_org（需修改）.sql", "sys_user_org", "SELECT * FROM SYS_USER_ORG");
 		

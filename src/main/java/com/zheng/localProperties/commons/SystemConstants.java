@@ -1,4 +1,4 @@
-package com.zheng.localProperties;
+package com.zheng.localProperties.commons;
 
 import java.util.Properties;
 

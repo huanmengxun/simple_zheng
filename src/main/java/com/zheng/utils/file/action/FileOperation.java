@@ -12,7 +12,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-import com.zheng.localProperties.MyConstants;
+import com.zheng.localProperties.commons.MyConstants;
 import com.zheng.utils.dataUtil.FileNameUtils;
 import com.zheng.utils.file.FileUtils;
 import com.zheng.utils.mylog.MyLoggerInfo;

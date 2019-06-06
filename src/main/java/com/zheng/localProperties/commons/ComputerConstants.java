@@ -1,4 +1,4 @@
-package com.zheng.localProperties;
+package com.zheng.localProperties.commons;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
