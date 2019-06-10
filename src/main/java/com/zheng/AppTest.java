@@ -10,6 +10,7 @@ import java.util.Map;
 import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
+import com.zheng.utils.dataUtil.MyDataBaseCommonQuery;
 import com.zheng.utils.dataUtil.MyDataBaseConn;
 import com.zheng.utils.dataUtil.MyDataBaseOperator;
 import com.zheng.utils.mylog.MyLoggerInfo;
@@ -22,9 +23,12 @@ public class AppTest {
 		exportSql("孙河用户建表语句", sunheTables);
 		
 	}
+	
 	public static void exportSqlTOLocal() {
-		File f=new File("F://北科数据");
+		String[] yuetan= {"INPUT_STORE","meeting_apply","meeting_apply_equipment","meeting_equipment","meeting_hasPublish","meeting_room","OFFICE_DETAIL","OFFICE_SUPPLIES"};
+		File f=new File("F://月坛数据");
 		f.mkdirs();
+		exportSql("yuetan", yuetan);
 //		String[] baseTables = { "base_codes", "base_datas", "base_hobby", "base_peoplestate", "base_shorturl",
 //				"base_tuser_group", "bkcc_file", "base_job", "base_job_log", "s_city", "s_community", "s_district",
 //				"s_grid", "s_province", "s_street", "slpt_service", "slpt_serviceannex", "slpt_filelink", "sys_script",
@@ -44,14 +48,12 @@ public class AppTest {
 //				"budget_template", "sys_calendar", "oa_attendancedata", "wechat_clockdata", "oa_mobilelog", "oa_mqlog",
 //				"oa_procedure" };
 //		exportSql("oa", oaTables);
-		
-
-		String[] oaTables = { "sys_project", "sys_project_history", "sys_work_condition", "sys_version",
-				"slpt_acceptance", "slpt_comattend", "office_supplies", "office_detail", "input_store", "meeting_room",
-				"meeting_hasPublish", "meeting_equipment", "meeting_apply_equipment", "meeting_apply",
-				"budget_template", "sys_calendar", "oa_attendancedata", "wechat_clockdata", "oa_mobilelog", "oa_mqlog",
-				"oa_procedure" };
-		exportSql("oa", oaTables);
+//		String[] oaTables = { "sys_project", "sys_project_history", "sys_work_condition", "sys_version",
+//				"slpt_acceptance", "slpt_comattend", "office_supplies", "office_detail", "input_store", "meeting_room",
+//				"meeting_hasPublish", "meeting_equipment", "meeting_apply_equipment", "meeting_apply",
+//				"budget_template", "sys_calendar", "oa_attendancedata", "wechat_clockdata", "oa_mobilelog", "oa_mqlog",
+//				"oa_procedure" };
+//		exportSql("oa", oaTables);
 	}
 
 	/**
@@ -61,7 +63,7 @@ public class AppTest {
 	 * @date: 2019年6月3日 下午5:39:37
 	 */
 	public static  void exportSql(String fileNames,String... tables) {
-		List<String> sqlString = MyDataBaseOperator.exportCreateTab(tables);
+		List<String> sqlString = MyDataBaseCommonQuery.genCreateTab(tables);
 		File file = new File("F://北科数据//"+fileNames+".sql");
 		try (FileWriter fw = new FileWriter(file)) {
 			for (String sql : sqlString) {
@@ -110,11 +112,13 @@ public class AppTest {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		MyDataBaseConn.CONN = MyDataBaseConn.getConnByProperties();
+		 MyDataBaseConn.getConnByProperties();
+//		exportSqlTOLocal();
 		
-		MyDataBaseOperator.exportSql("F://科立数据//ceshi2.sql", "slpt_service", "select * from slpt_service where servicename like '申请开票单'");
-		MyDataBaseOperator.exportSql("F://科立数据//ceshi2.sql", "bpm_form_table", "select * from bpm_form_table where tableid in (select tableid from slpt_service where servicename like '申请开票单') or maintableid in (select tableid from slpt_service where servicename like '申请开票单')",true);
-		MyDataBaseOperator.exportSql("F://科立数据//ceshi2.sql", "bpm_form_field", " select * from bpm_form_field where tableid in (select tableid from slpt_service where servicename like '申请开票单' union  select tableid from bpm_form_table where maintableid in (select tableid from slpt_service where servicename like '申请开票单')) ",true);
+//		MyDataBaseOperator.exportSql("F://月坛数据//ceshi.sql", "slpt_service", "select * from slpt_service where includeorgname like '%月坛%' and smalltypename != '财务'");
+//		MyDataBaseOperator.exportSql("F://月坛数据//ceshi.sql", "bpm_form_table", "select * from bpm_form_table where tableid in (select tableid from slpt_service where includeorgname like '%月坛%' and smalltypename != '财务') or maintableid in (select tableid from slpt_service where includeorgname like '%月坛%' and smalltypename != '财务')",true);
+//		MyDataBaseOperator.exportSql("F://月坛数据//ceshi.sql", "bpm_form_field", " select * from bpm_form_field where tableid in (select tableid from slpt_service where includeorgname like '%月坛%' and smalltypename != '财务' union  select tableid from bpm_form_table where maintableid in (select tableid from slpt_service where includeorgname like '%月坛%' and smalltypename != '财务')) ",true);
+		
 		
 //		MyDataBaseOperator.exportSql("F://科立数据//gz.sql", "w_gzsp", "select * from w_gzsp where id = 4437916717810688");
 //		MyDataBaseOperator.exportSql("F://科立数据//gz.sql", "w_gzspzb", "select * from w_gzspzb where pid = 4437916717810688",true);

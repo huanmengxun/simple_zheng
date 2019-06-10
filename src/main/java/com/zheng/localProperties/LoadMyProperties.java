@@ -1,20 +1,11 @@
 package com.zheng.localProperties;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Properties;
-
-import org.yaml.snakeyaml.Yaml;
 
 import com.zheng.localProperties.commons.MyConstants;
 
@@ -26,7 +17,7 @@ import com.zheng.localProperties.commons.MyConstants;
  */
 public class LoadMyProperties {
 	private static String Config_FILE_PATH = MyConstants.getConfigPath() + "zhengProperties.properties";
-	private static Map<Object, Object> localConfig = new HashMap<>();
+	private static Properties localConfig = new Properties();
 
 	/**
 	 * 功能描述：获取配置文件信息
@@ -34,7 +25,7 @@ public class LoadMyProperties {
 	 * @author: zheng
 	 * @return
 	 */
-	public static Map<Object, Object> getConfigMsg() {
+	public static Properties getConfigMsg() {
 		return getConfigMsg(Config_FILE_PATH);
 	}
 
@@ -45,8 +36,8 @@ public class LoadMyProperties {
 	 * @param configPath
 	 * @return
 	 */
-	public static Map<Object, Object> getConfigMsg(String configPath) {
-		if (configPath.equals(Config_FILE_PATH)) {
+	public static Properties getConfigMsg(String configPath) {
+		if (configPath.equals(Config_FILE_PATH)&&!localConfig.isEmpty()) {
 			return localConfig;
 		} else {
 			return reGetConfig(configPath);
@@ -130,7 +121,7 @@ public class LoadMyProperties {
 	 * @param configPath
 	 * @return
 	 */
-	private static Map<Object, Object> reGetConfig(String configPath) {
+	private static Properties reGetConfig(String configPath) {
 		Properties props = new Properties();
 		try {
 			props.load(new FileInputStream(configPath));
@@ -155,7 +146,7 @@ public class LoadMyProperties {
 	 * @param configPath 路径
 	 * @param dataMap     配置信息
 	 */
-	private static void reWriteConfig(String configPath, Map<Object,Object> prop) {
+	private static void reWriteConfig(String configPath, Properties prop) {
 		try {
 			Properties props = new Properties();
 			props.load(new FileInputStream(configPath));

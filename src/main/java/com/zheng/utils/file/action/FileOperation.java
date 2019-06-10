@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.util.Date;
 
 import com.zheng.localProperties.commons.MyConstants;
-import com.zheng.utils.dataUtil.FileNameUtils;
-import com.zheng.utils.file.FileUtils;
+import com.zheng.utils.file.MyFileNameUtils;
+import com.zheng.utils.file.MyFileUtils;
 import com.zheng.utils.mylog.MyLoggerInfo;
 
 public class FileOperation {
@@ -108,7 +108,7 @@ public class FileOperation {
 	 * 功能描述： 在该目录下删除含有指定名称的文件-遍历
 	 */
 	public static void deleteFileFolderByFolderPath(String folderPath, String fileKeyName, int fileFolderType) {
-		deleteFileFolderByFolderPath(folderPath, fileKeyName, FileUtils.FileNameGetConstants.FIND_AND_CONTAINS,
+		deleteFileFolderByFolderPath(folderPath, fileKeyName, MyFileUtils.FileNameGetConstants.FIND_AND_CONTAINS,
 				fileFolderType);
 	}
 
@@ -117,7 +117,7 @@ public class FileOperation {
 	 */
 	public static void deleteFileByFolderPath(String folderPath, String fileKeyName, int fileNameChangeType) {
 		deleteFileFolderByFolderPath(folderPath, fileKeyName, fileNameChangeType,
-				FileUtils.FileFolderTypeConstants.IS_FILE_ALL);
+				MyFileUtils.FileFolderTypeConstants.IS_FILE_ALL);
 	}
 
 	/**
@@ -125,7 +125,7 @@ public class FileOperation {
 	 */
 	public static void deleteFolderByFolderPath(String folderPath, String fileKeyName, int fileNameChangeType) {
 		deleteFileFolderByFolderPath(folderPath, fileKeyName, fileNameChangeType,
-				FileUtils.FileFolderTypeConstants.IS_FOLDER_ALL);
+				MyFileUtils.FileFolderTypeConstants.IS_FOLDER_ALL);
 	}
 
 	/**
@@ -143,16 +143,16 @@ public class FileOperation {
 		File file = new File(folderPath);
 		if (file.exists() && file.isFile()) {
 			switch (fileFolderType) {
-			case FileUtils.FileFolderTypeConstants.IS_FILE:
+			case MyFileUtils.FileFolderTypeConstants.IS_FILE:
 				deleteFileByFolderPath(file, fileKeyName, fileNameChangeType, false);
 				break;
-			case FileUtils.FileFolderTypeConstants.IS_FILE_ALL:
+			case MyFileUtils.FileFolderTypeConstants.IS_FILE_ALL:
 				deleteFileByFolderPath(file, fileKeyName, fileNameChangeType, true);
 				break;
-			case FileUtils.FileFolderTypeConstants.IS_FOLDER:
+			case MyFileUtils.FileFolderTypeConstants.IS_FOLDER:
 				deleteFolderByFolderPath(file, fileKeyName, fileNameChangeType, false);
 				break;
-			case FileUtils.FileFolderTypeConstants.IS_FOLDER_ALL:
+			case MyFileUtils.FileFolderTypeConstants.IS_FOLDER_ALL:
 				deleteFolderByFolderPath(file, fileKeyName, fileNameChangeType, true);
 				break;
 			default:
@@ -286,17 +286,17 @@ public class FileOperation {
 			String oldName) {
 		String newName = "";
 		switch (fileNameChangeType) {
-		case FileUtils.FileNameGetConstants.FIND_FROM_START:
+		case MyFileUtils.FileNameGetConstants.FIND_FROM_START:
 			if (oldName.startsWith(orginStr)) {
 				newName = oldName.replaceFirst(orginStr, replaceStr);
 			}
 			break;
-		case FileUtils.FileNameGetConstants.FIND_FROM_END:
+		case MyFileUtils.FileNameGetConstants.FIND_FROM_END:
 			if (oldName.endsWith(orginStr)) {
 				newName = oldName.substring(0, oldName.length() - orginStr.length() - 1) + replaceStr;
 			}
 			break;
-		case FileUtils.FileNameGetConstants.FIND_AND_ONLY:
+		case MyFileUtils.FileNameGetConstants.FIND_AND_ONLY:
 			newName = replaceStr;
 			break;
 		default:
@@ -316,7 +316,7 @@ public class FileOperation {
 	 */
 	public static void replaceFileName(String filePath, int fileNameChangeType, String orginStr, String replaceStr) {
 		File f = new File(filePath);
-		File writeFile = new File(FileNameUtils.getFileLogType(null, filePath));
+		File writeFile = new File(MyFileNameUtils.getFileLogType(null, filePath));
 		if (!writeFile.exists()) {
 			try {
 				writeFile.createNewFile();
@@ -362,13 +362,13 @@ public class FileOperation {
 	 */
 	private static boolean isHasKeyName(String fileName, String fileKeyName, int fileNameChangeType) {
 		switch (fileNameChangeType) {
-		case FileUtils.FileNameGetConstants.FIND_AND_CONTAINS:
+		case MyFileUtils.FileNameGetConstants.FIND_AND_CONTAINS:
 			return fileName.contains(fileKeyName);
-		case FileUtils.FileNameGetConstants.FIND_FROM_START:
+		case MyFileUtils.FileNameGetConstants.FIND_FROM_START:
 			return fileName.startsWith(fileKeyName);
-		case FileUtils.FileNameGetConstants.FIND_FROM_END:
+		case MyFileUtils.FileNameGetConstants.FIND_FROM_END:
 			return fileName.startsWith(fileKeyName);
-		case FileUtils.FileNameGetConstants.FIND_AND_ONLY:
+		case MyFileUtils.FileNameGetConstants.FIND_AND_ONLY:
 			return fileName.trim().equals(fileKeyName);
 		default:
 			return fileName.contains(fileKeyName);

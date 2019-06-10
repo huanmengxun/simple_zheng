@@ -1,18 +1,5 @@
 package com.zheng.utils.file;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.http.client.utils.DateUtils;
-
-import com.zheng.localProperties.commons.MyConstants;
-
-import lombok.extern.log4j.Log4j2;
-
 /**
  * 
  * 功能描述： 文件相关方法类
@@ -20,7 +7,7 @@ import lombok.extern.log4j.Log4j2;
  * @Package: com.zheng.utils.file
  * @author: zheng
  */
-public class FileUtils {
+public class MyFileUtils {
 
 
 	

@@ -10,7 +10,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.zheng.utils.common.ResultData;
-import com.zheng.utils.dataUtil.FileNameUtils;
+import com.zheng.utils.file.MyFileNameUtils;
 import com.zheng.utils.file.action.MyFileUtils;
 
 public class ReptileUseJousp {
@@ -31,7 +31,7 @@ public class ReptileUseJousp {
 	 */
 	public static ResultData downAllResouceByUrl(String url,String filePath) throws IOException {
 		System.out.println(url);
-		url=FileNameUtils.validateStartUrl(url);
+		url=MyFileNameUtils.validateStartUrl(url);
 		Connection tempConn = Jsoup.connect(url);
 		//怎么判断是否连接成功？
 		Connection.Response demo = tempConn.ignoreContentType(true).method(Connection.Method.GET).execute();
@@ -74,7 +74,7 @@ public class ReptileUseJousp {
 	
 
 	public static ResultData downImage(String url,String filePath) throws IOException {
-		url=FileNameUtils.validateStartUrl(url);
+		url=MyFileNameUtils.validateStartUrl(url);
 		Connection tempConn = Jsoup.connect(url);
 		//怎么判断是否连接成功？
 		Connection.Response demo = tempConn.ignoreContentType(true).method(Connection.Method.GET).execute();

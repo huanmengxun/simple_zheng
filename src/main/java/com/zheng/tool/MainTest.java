@@ -10,7 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.zheng.utils.dataUtil.FileNameUtils;
+import com.zheng.utils.file.MyFileNameUtils;
 import com.zheng.utils.file.action.MyFileUtils;
 
 public class MainTest {
@@ -21,10 +21,10 @@ public class MainTest {
 	}
 	
 	
-	public static boolean isFileRegularTrue(String fileName) {
+	public static boolean isFileRegularTrue(String fileName,String title) {
 		File file=new File(fileName);
 
-		if(file.exists()||!fileName.contains("精灵")
+		if(file.exists()||!title.contains("CG")
 //				||fileName.contains("姐弟")
 //				||fileName.contains("韩漫")
 //				||fileName.contains("母子")
@@ -48,7 +48,7 @@ public class MainTest {
 	}
 	public static void downAllResouceByUrl(String url,String filePath,String sort,String endUrl) throws IOException {
 		System.out.println(url);
-		url=FileNameUtils.validateStartUrl(url);
+		url=MyFileNameUtils.validateStartUrl(url);
 		Connection tempConn = Jsoup.connect(url);
 		Connection.Response demo = tempConn.ignoreContentType(true).method(Connection.Method.GET).execute();
 		Document documentDemo = demo.parse();
@@ -61,7 +61,7 @@ public class MainTest {
 					public void run() {
 						try {
 							String fileName=filePath+File.separator+titleTrim( e.text());
-							if(isFileRegularTrue(fileName)) {
+							if(isFileRegularTrue(fileName,e.text())) {
 								downImage( e.attr("abs:href"), fileName);
 							}
 						} catch (IOException e) {
@@ -77,7 +77,7 @@ public class MainTest {
 					public void run() {
 						try {
 							String fileName=filePath+File.separator+titleTrim( e.text());
-							if(isFileRegularTrue(fileName)) {
+							if(isFileRegularTrue(fileName,e.text())) {
 								downImage( e.attr("abs:href"), fileName);
 							}
 						} catch (IOException e) {
@@ -101,23 +101,35 @@ public class MainTest {
 	}
 	
 	
-	public static void testConn(String url,String next) {
+	public static void testConn(String url,String next,String path) {
 		next=next==null||next.equals("")?"next":next;
-		url=FileNameUtils.validateStartUrl(url);
+		url=MyFileNameUtils.validateStartUrl(url);
 		Connection tempConn = Jsoup.connect(url);
 		//怎么判断是否连接成功？
 		Connection.Response demo;
 		try {
 			demo = tempConn.ignoreContentType(true).method(Connection.Method.GET).execute();
 			Document documentDemo = demo.parse();
-			Elements list=documentDemo.getElementsByClass("listbox");
-			for(Element e:list.get(0).getElementsByTag("ul").get(1).getElementsByTag("a")) {
-				System.out.println(e.attr("abs:href"));
-				System.out.println(e.text());
+//			System.out.println(documentDemo.toString());
+			Elements imgs= documentDemo.getElementsByTag("img");
+			for(Element img:imgs) {
+				String url1=img.attr("abs:src");
+				String url2=img.attr("abs:data-original");
+				if(!url1.equals("")) {
+					MyFileUtils.downUrlFileAndNameByTime(url1, path);
+				}
+				if(!url2.equals("")) {
+					MyFileUtils.downUrlFileAndNameByTime(url2,path);
+				}
 			}
-			for(Element e:list.get(0).getElementsByClass(next)) {
-				System.out.println(e.attr("abs:href"));
-			}
+//			Elements list=documentDemo.getElementsByClass("listbox");
+//			for(Element e:list.get(0).getElementsByTag("ul").get(1).getElementsByTag("a")) {
+//				System.out.println(e.attr("abs:href"));
+//				System.out.println(e.text());
+//			}
+//			for(Element e:list.get(0).getElementsByClass(next)) {
+//				System.out.println(e.attr("abs:href"));
+//			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -125,7 +137,7 @@ public class MainTest {
 	}
 
 	public static void downImage(String url,String filePath) throws IOException {
-		url=FileNameUtils.validateStartUrl(url);
+		url=MyFileNameUtils.validateStartUrl(url);
 		Connection tempConn = Jsoup.connect(url);
 		//怎么判断是否连接成功？
 		Connection.Response demo = tempConn.ignoreContentType(true).method(Connection.Method.GET).execute();
@@ -146,9 +158,14 @@ public class MainTest {
 			}
 		}
 	}
-//	public static void main(String[] args) {
-//		String url="http://mmas.xyz/cfmw/12/45.html";
-//		testConn(url,"next");
-//	}
+	public static void main(String[] args) {
+//		String url="https://18comic.cc/photo/69779/";
+//		http://mmas.xyz/jhna/12.html
+//		testConn(url,"next","F://image/1");
+		
+//		https://18comic.cc/photo/113712/
+//		https://18comic.cc/photo/113716/
+//		https://18comic.cc/photo/113603/
+	}
 //	
 }

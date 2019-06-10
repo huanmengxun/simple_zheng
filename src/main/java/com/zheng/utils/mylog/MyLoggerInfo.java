@@ -1,6 +1,9 @@
 package com.zheng.utils.mylog;
 
-import java.util.Map;
+import com.zheng.localProperties.LoadMyYmal;
+import com.zheng.utils.common.MyCommonUtils;
+
+import lombok.Data;
 
 /**
  * 功能描述： 自己写的日志类 //https://www.cnblogs.com/zhaoyan001/p/6365064.html //单例
@@ -9,12 +12,10 @@ import java.util.Map;
  * @author: zheng
  * @date: 2019年5月31日 上午9:03:33
  */
-
 public class MyLoggerInfo {
 	private static volatile MyLoggerInfo singleton;
-	
+
 	private MyLoggerInfo() {
-		
 	}
 
 	public static MyLoggerInfo getInstance() {
@@ -34,16 +35,53 @@ public class MyLoggerInfo {
 //		return MyLoggerInfoInstance.INSTANCE;
 //	}
 
-	public void loadProperties() {
-
+	public void getConsoleConfig() {
+		LoadMyYmal.getConfigValueByKey("mylogger.console");
 	}
 
-	public void loadProperties(String path) {
+
+	public void debug(Object msg) {
+		console("DEBUG", msg);
+	}
+	public void debug(Object msg, Object... o) {
+		console("DEBUG", msg, o);
 	}
 
-	public Map<Object, Object> readProperties() {
-		return null;
+	public void info(Object msg) {
+		console("INFO", msg);
 	}
+	public void info(Object msg, Object... o) {
+		console("INFO", msg, o);
+	}
+
+
+	public void warn(Object msg) {
+		console("WARN", msg);
+	}
+	public void warn(Object msg, Object... o) {
+		console("WARN", msg, o);
+	}
+
+	public void error(Object msg) {
+		console("ERROR", msg);
+	}
+	public void error(Object msg, Object... o) {
+		console("ERROR", msg, o);
+	}
+	public void fatal(Object msg) {
+		console("FATAL", msg);
+	}
+	public void fatal(Object msg, Object... o) {
+		console("FATAL", msg, o);
+	}
+
+
+	@Data
+	private class LoggerModel {
+		private String level;
+	}
+
+//	--------------内部私有方法---------------------
 
 	/**
 	 * 功能描述：输出的处理
@@ -53,40 +91,71 @@ public class MyLoggerInfo {
 	 * @param msg   信息
 	 * @param o     后面加的参数，现在只是简单的后面添加
 	 */
-	public void console(String level, Object... o) {
-		if (o.length > 0) {
-			String msg=o[0]==null?"":o[0].toString();
+	private void console(String level, Object msg, Object... objects) {
+		if (isLevelOut(level) && !MyCommonUtils.isEmpty(msg)) {
 			StackTraceElement clazz = new Exception().getStackTrace()[2];
 			String classname = clazz.getClassName();
 			String preStr = classname + "." + clazz.getMethodName() + "(" + clazz.getFileName() + ":"
 					+ clazz.getLineNumber() + ")";
-			for(int i=1;i<o.length;i++) {
-				msg+=o[i];
-			}
-			System.out.println(level + "- " + preStr + "-" + msg);
+
+			StringBuilder out = new StringBuilder();
+			out.append("[");
+			out.append(level);
+			out.append("]- ");
+			out.append(preStr);
+			out.append(":\r\t");
+			out.append(handleString(msg,objects));
+			System.out.println(out.toString());
 		} else {
 			return;
 		}
 	}
 
-	public void debug(Object... o) {
-		console("[DEBUG]", o);
+	private String handleString(Object msg, Object... objects) {
+		StringBuilder sb=new StringBuilder();
+		if(msg instanceof String) {
+			sb=hadleOutString(sb, msg.toString(), 0, objects);
+		}else {
+			sb.append(msg);
+			for(Object o:objects) {
+				sb.append(o);
+			}
+		}
+		return sb.toString();
 	}
+	
 
-	public void info(Object... o) {
-		console("[INFO]", o);
+	private StringBuilder hadleOutString(StringBuilder sb,String msg,int index,Object... objects) {
+		if(index<objects.length) {
+			int firstLeft=msg.indexOf("{");
+			if(firstLeft<0) {
+				sb.append(msg);
+				for(;index<objects.length;index++) {
+					sb.append(objects[index]);
+				}
+			}else if(firstLeft==msg.length()){
+				for(;index<objects.length;index++) {
+					sb.append(objects[index]);
+				}
+			}else {
+				if(msg.charAt(firstLeft+1)=='}') {
+					sb.append(msg.substring(0, firstLeft));
+					sb.append(objects[index]);
+					return hadleOutString(sb, msg.substring(firstLeft+2), ++index, objects);
+				}else {
+					sb.append(msg.substring(0, firstLeft));
+					return hadleOutString(sb, msg.substring(firstLeft), index, objects);
+				}
+			}
+			return sb;
+		}else {
+			sb.append(msg);
+			return sb;
+		}
 	}
+	
 
-	public void warn(Object... o) {
-		console("[WARN]", o);
+	private Boolean isLevelOut(String level) {
+		return true;
 	}
-
-	public void error(Object... o) {
-		console("[ERROR]", o);
-	}
-
-	public void fatal(Object... o) {
-		console("[FATAL]", o);
-	}
-
 }

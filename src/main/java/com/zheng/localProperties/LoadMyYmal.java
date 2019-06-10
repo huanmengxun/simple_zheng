@@ -25,7 +25,7 @@ public class LoadMyYmal {
 	private final static DumperOptions OPTIONS = new DumperOptions();
 	private static String Config_FILE_PATH = MyConstants.getConfigPath() + "zhengApplication.yml";
 
-	private static Map<String, Object> localConfig = new HashMap<>();
+	private static LinkedHashMap<Object, Object> localConfig = new LinkedHashMap<>();
 
 	static {
 		// 将默认读取的方式设置为块状读取
@@ -38,10 +38,10 @@ public class LoadMyYmal {
 	 * @author: zheng
 	 * @return
 	 */
-	public static Map<String, Object> getConfigMsg() {
+	public static LinkedHashMap<Object, Object> getConfigMsg() {
 		return getConfigMsg(Config_FILE_PATH);
 	}
-	
+
 	/**
 	 * 功能描述：根据指定路径获取配置文件信息
 	 *
@@ -49,23 +49,27 @@ public class LoadMyYmal {
 	 * @param configPath
 	 * @return
 	 */
-	public static Map<String, Object> getConfigMsg(String configPath) {
-		if (configPath.equals(Config_FILE_PATH)) {
+	public static LinkedHashMap<Object, Object> getConfigMsg(String configPath) {
+		if (configPath.equals(Config_FILE_PATH) && !localConfig.isEmpty()) {
 			return localConfig;
 		} else {
 			return reGetConfig(configPath);
 		}
 	}
-	
+
 	/**
 	 * 功能描述：根据键获取对应值
 	 *
-	 * @author: zheng  
+	 * @author: zheng
 	 * @param key
 	 * @return
 	 */
 	public static Object getConfigValueByKey(String key) {
-		return localConfig.get(key);
+		Object o = getConfigMsg().get(key);
+		if (o == null) {
+			return getConfigValueByKey(getConfigMsg(), key);
+		}
+		return o;
 	}
 
 	/**
@@ -84,11 +88,11 @@ public class LoadMyYmal {
 	 *
 	 * @author: zheng
 	 * @param configPath 配置文件路径
-	 * @param key         移除键
+	 * @param key        移除键
 	 * @throws IOException
 	 */
 	public static void removeConfigByKey(String configPath, String key) throws IOException {
-		Map<String, Object> dataMap = new HashMap<>();
+		Map<Object, Object> dataMap = new HashMap<>();
 		dataMap = removeMap(localConfig, key);
 		reWriteConfig(configPath, dataMap);
 		reGetConfig(configPath);
@@ -111,15 +115,15 @@ public class LoadMyYmal {
 	 *
 	 * @author: zheng
 	 * @param configPath 配置文件路径
-	 * @param key         键
-	 * @param value       值
+	 * @param key        键
+	 * @param value      值
 	 * @throws IOException
 	 */
 	public static void addKeyIntoConfig(String configPath, String key, Object value) throws IOException {
-		Map<String, Object> dataMap = localConfig;
+		Map<Object, Object> dataMap = localConfig;
 		int firstPoint = key.indexOf('.');
 		if (firstPoint != -1 && firstPoint < key.length()) {
-			dataMap = (LinkedHashMap<String, Object>) addMap(dataMap, key, value);
+			dataMap = (LinkedHashMap<Object, Object>) addMap(dataMap, key, value);
 		} else {
 			dataMap.put(key, value);
 		}
@@ -138,7 +142,7 @@ public class LoadMyYmal {
 	 * @param key
 	 * @return
 	 */
-	private static Map<String, Object> removeMap(Map<String, Object> dataYmalMap, String key) {
+	private static Map<Object, Object> removeMap(Map<Object, Object> dataYmalMap, String key) {
 		int firstPoint = key.indexOf('.');
 		if (firstPoint != -1 && firstPoint < key.length()) {
 			String firstKey = key.substring(0, firstPoint);
@@ -169,19 +173,19 @@ public class LoadMyYmal {
 	 * @param value
 	 * @return
 	 */
-	private static Map<String, Object> addMap(Map<String, Object> dataYmalMap, String key, Object value) {
+	private static Map<Object, Object> addMap(Map<Object, Object> dataYmalMap, String key, Object value) {
 		int firstPoint = key.indexOf('.');
-		Map<String, Object> param = new HashMap<>();
+		Map<Object, Object> param = new HashMap<>();
 		if (firstPoint != -1 && firstPoint < key.length()) {
 			String firstKey = key.substring(0, firstPoint);
 			String subKey = key.substring(firstPoint + 1);
 			if (dataYmalMap.get(firstKey) != null) {
-				Map<String, Object> subData = (Map<String, Object>) dataYmalMap.get(firstKey);
-				Map<String, Object> subParam = addMap(subData, subKey, value);
+				Map<Object, Object> subData = (Map<Object, Object>) dataYmalMap.get(firstKey);
+				Map<Object, Object> subParam = addMap(subData, subKey, value);
 				param = dataYmalMap;
 				param.put(firstKey, subParam);
 			} else {
-				param.put(firstKey, addMap(new HashMap<String, Object>(), firstKey, value));
+				param.put(firstKey, addMap(new HashMap<Object, Object>(), firstKey, value));
 			}
 		} else {
 			param = dataYmalMap;
@@ -198,7 +202,7 @@ public class LoadMyYmal {
 	 * @param configPath
 	 * @return
 	 */
-	private static Map<String, Object> reGetConfig(String configPath) {
+	private static LinkedHashMap<Object, Object> reGetConfig(String configPath) {
 		try {
 			Yaml yaml = new Yaml(OPTIONS);
 			localConfig.clear();
@@ -216,17 +220,31 @@ public class LoadMyYmal {
 	 * @author: zheng
 	 * @date: 2019年6月6日 下午3:21:43
 	 * @param configPath 路径
-	 * @param dataMap     配置信息
+	 * @param dataMap    配置信息
 	 */
-	private static void reWriteConfig(String configPath, Map<String, Object> dataMap) {
+	private static void reWriteConfig(String configPath, Map<Object, Object> dataMap) {
 		File dest = new File(configPath);
 		Yaml yaml = new Yaml(OPTIONS);
 		try {
 			yaml.dump(dataMap, new FileWriter(dest));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	private static Object getConfigValueByKey(LinkedHashMap<Object, Object> yamlMap, String key) {
+		Object o = yamlMap.get(key);
+		if (o == null) {
+			int firstPoint = key.indexOf('.');
+			if (firstPoint > 0) {
+				Object firstVal = yamlMap.get(key.substring(0, firstPoint));
+				if (firstVal instanceof LinkedHashMap) {
+					return getConfigValueByKey((LinkedHashMap<Object, Object>) firstVal, key.substring(firstPoint+1));
+				}
+			}
+			return null;
+		}
+		return o;
 	}
 
 }

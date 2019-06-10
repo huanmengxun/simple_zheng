@@ -22,34 +22,36 @@ public class MyDataBaseConn {
 	public static String ORACLE = "ORACLE";
 	public static String H2 = "H2";
 	public static Connection CONN = null;
-	public static String DATA_TYPE= null;
-	static MyLoggerInfo log=MyLoggerInfo.getInstance();
-	
+	public static String DATA_TYPE = null;
+	static MyLoggerInfo log = MyLoggerInfo.getInstance();
+
 //	/* 查询数据库 ‘mammothcode’ 所有表注释 */
 //	SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema='mammothcode';
-	
+
 	static {
 //		if (CONN == null) {
-//			CONN = MyDataBaseConn.getConnByYml();
+//			MyDataBaseConn.getConnByYml();
 //		}
 	}
+
 	/**
 	 * 功能描述：根据默认配置文件获取连接
 	 *
-	 * @author: zheng  
+	 * @author: zheng
 	 * @return
 	 */
-	public static Connection getConnByYml() {
+	public static void getConnByYml() {
 		Object obj = LoadMyYmal.getConfigValueByKey("dataSource.master");
 		if (obj != null && obj instanceof Map) {
-			return getConnByMap((Map<String, Object>) obj);
+			getConnByMap((Map<String, Object>) obj);
 		} else {
-			return null;
+			log.warn("链接失败");
 		}
+
 	}
 
-	public static Connection getConnByProperties() {
-		return getConnByProperties(null);
+	public static void getConnByProperties() {
+		getConnByProperties(null);
 	}
 
 	/**
@@ -58,69 +60,17 @@ public class MyDataBaseConn {
 	 * @param propertiesPath 配置文件
 	 * @return
 	 */
-	public static Connection getConnByProperties(String propertiesPath) {
+	public static void getConnByProperties(String propertiesPath) {
 		Map<Object, Object> prop = LoadMyProperties.getConfigMsg();
-		return getConnByMap(prop,"sql."+prop.get("sql.master")+".");
+		getConnByMap(prop, "sql." + prop.get("sql.master") + ".");
 	}
 
-
-	public static Connection getConnByMap(Map<?, Object> prop,String preFix) {
-		if (prop != null) {
-			if (prop.get(preFix+"dataType") == null) {
-				log.error("未指定dataType数据库类型");
-				return null;
-			}
-			if (prop.get(preFix+"dataIp") == null) {
-				log.error("未指定ip代表具体ip");
-				return null;
-			}
-			if (prop.get(preFix+"dbName") == null) {
-				log.error("未指定使用数据库dbName名称为");
-				return null;
-			}
-			if (prop.get(preFix+"password") == null) {
-				log.error("未指定数据库密码password");
-				return null;
-			}
-			return getConn(prop.get(preFix+"dataIp").toString(), prop.get(preFix+"port").toString(), prop.get(preFix+"dataType").toString(),
-					prop.get(preFix+"dbName").toString(), prop.get(preFix+"username").toString(), prop.get(preFix+"password").toString());
-		} else {
-			log.error("未存在配置信息");
-			return null;
-		}
-	}
-	
-	public static Connection getConnByMap(Map<?, Object> prop) {
-		if (prop != null) {
-			if (prop.get("dataType") == null) {
-				log.error("未指定dataType名称是为那个数据库");
-				return null;
-			}
-			if (prop.get("dataIp") == null) {
-				log.error("未指定ip代表具体ip");
-				return null;
-			}
-			if (prop.get("dbName") == null) {
-				log.error("未指定使用数据库dbName名称为");
-				return null;
-			}
-			if (prop.get("password") == null) {
-				log.error("未指定数据库密码password");
-				return null;
-			}
-			return getConn(prop.get("dataIp").toString(), prop.get("port").toString(), prop.get("dataType").toString(),
-					prop.get("dbName").toString(), prop.get("username").toString(), prop.get("password").toString());
-		} else {
-			log.error("未存在配置信息");
-			return null;
-		}
+	public static void getConnn(MyDataBaseModel model) {
+		getConn(model.getDataIp(), model.getPort(), model.getDateType(), model.getDbName(), model.getUsername(),
+				model.getPassword());
 	}
 
-	public static Connection getConnn(MyDataBaseModel model) {
-		return getConn(model.getDataIp(), model.getPort(), model.getDateType(), model.getDbName(), model.getUsername(), model.getPassword());
-	}
-	
-	public static Connection getConn(String dataIp, String port, String dataType, String dbName, String username,
+	public static void getConn(String dataIp, String port, String dataType, String dbName, String username,
 			String password) {
 		String driverName = "";
 		if (dataIp == null || dataIp.equals(""))
@@ -129,8 +79,7 @@ public class MyDataBaseConn {
 		if (port != null) {
 			portStr = ":" + port;
 		}
-		StringBuilder url=new StringBuilder();
-		DATA_TYPE=dataType;
+		StringBuilder url = new StringBuilder();
 		switch (dataType.toUpperCase()) {
 		case "MYSQL":
 			if (portStr.equals(""))
@@ -162,7 +111,7 @@ public class MyDataBaseConn {
 			driverName = MyConstants.DataBaseConstants.ORACLE.getDriverName();
 			break;
 		default:
-			return null;
+			return;
 		}
 		if (username == null || username.equals("")) {
 			username = "root";
@@ -170,14 +119,13 @@ public class MyDataBaseConn {
 		if (password == null || password.equals("")) {
 			password = "root";
 		}
-//		log.info("账号{},密码{},数据库连接{},驱动类{}", username, password, url, driverName);
 		try {
 			System.out.println("开始连接");
 			Class.forName(driverName);
 			log.info("{},{},{}", url, username, password);
 			CONN = DriverManager.getConnection(url.toString(), username, password);
+			DATA_TYPE = dataType;
 			log.info("{}数据库连接成功", dbName.toUpperCase());
-			return CONN;
 		} catch (ClassNotFoundException e) {
 			log.error(e.getMessage());
 			e.printStackTrace();
@@ -185,7 +133,6 @@ public class MyDataBaseConn {
 			log.error(e.getMessage());
 			e.printStackTrace();
 		}
-		return CONN;
 	}
 
 //	public static void update(String sql,Map<String,Object> param) {
@@ -215,32 +162,8 @@ public class MyDataBaseConn {
 //		return i;
 //	}
 
-	/**
-	 * 功能描述：获取表中所有字段
-	 *
-	 * @author: zheng
-	 * @param tableName
-	 * @return
-	 */
-	public static List<String> getTabAllField(String tableName) {
-		List<String> fieldName = new ArrayList<>();
-		String sql="";
-		if(DATA_TYPE.toUpperCase().equals("MYSQL")){
-			sql="desc "+tableName;
-			List<Map<String, Object>> fieldList = query(sql);
-			for (Map<String, Object> field : fieldList) {
-				fieldName.add(field.get("Field").toString());
-			}
-		}else if(DATA_TYPE.toUpperCase().equals("ORACLE")) {
-			sql="SELECT t.COLUMN_NAME FROM User_Tab_Cols t, User_Col_Comments t1 WHERE t.table_name = t1.table_name AND t.column_name = t1.column_name  and t1.table_name = '"+tableName.toUpperCase()+"'";
-			List<Map<String, Object>> fieldList = query(sql);
-			for (Map<String, Object> field : fieldList) {
-				fieldName.add(field.get("COLUMN_NAME").toString());
-			}
-		}else {
-			return null;
-		}
-		return fieldName;
+	public static List<Map<String, Object>> query(String sql) {
+		return queryByParams(sql);
 	}
 
 	/**
@@ -251,24 +174,25 @@ public class MyDataBaseConn {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<Map<String, Object>> query(String sql) {
+	public static List<Map<String, Object>> queryByParams(String sql, Object... param) {
+		sql = MyDataBaseUtils.handleSql(sql, param);
 		try (ResultSet rs = getResultSet(sql, "query");) {
 			log.info(sql);
-			if(rs==null) {
+			if (rs == null) {
 				return null;
 			}
 			ResultSetMetaData md = rs.getMetaData();
 			int col = md.getColumnCount();
-			List<Map<String, Object>> result = new ArrayList<>();
+			List<Map<String, Object>> resultList = new ArrayList<>();
 			while (rs.next()) {
-				Map<String, Object> param = new HashMap<>();
+				Map<String, Object> resultVal = new HashMap<>();
 				for (int i = 1; i <= col; i++) {
-					param.put(md.getColumnLabel(i), rs.getObject(i));
+					resultVal.put(md.getColumnLabel(i), rs.getObject(i));
 				}
-				result.add(param);
+				resultList.add(resultVal);
 			}
-			log.info(result);
-			return result;
+			log.info(resultList);
+			return resultList;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -316,4 +240,49 @@ public class MyDataBaseConn {
 //	    }
 //	    return i;
 //	}
+
+//	--------------私有方法------------------
+
+	private static void getConnByMap(Map<?, Object> prop, String preFix) {
+		if (!prop.isEmpty()) {
+			if (prop.get(preFix + "dataType") == null) {
+				log.error("未指定dataType数据库类型");
+			}
+			if (prop.get(preFix + "dataIp") == null) {
+				log.error("未指定ip代表具体ip");
+			}
+			if (prop.get(preFix + "dbName") == null) {
+				log.error("未指定使用数据库dbName名称为");
+			}
+			if (prop.get(preFix + "password") == null) {
+				log.error("未指定数据库密码password");
+			}
+			getConn(prop.get(preFix + "dataIp").toString(), prop.get(preFix + "port").toString(),
+					prop.get(preFix + "dataType").toString(), prop.get(preFix + "dbName").toString(),
+					prop.get(preFix + "username").toString(), prop.get(preFix + "password").toString());
+		} else {
+			log.error("未存在配置信息");
+		}
+	}
+
+	private static void getConnByMap(Map<?, Object> prop) {
+		if (prop != null) {
+			if (prop.get("dataType") == null) {
+				log.error("未指定dataType名称是为那个数据库");
+			}
+			if (prop.get("dataIp") == null) {
+				log.error("未指定ip代表具体ip");
+			}
+			if (prop.get("dbName") == null) {
+				log.error("未指定使用数据库dbName名称为");
+			}
+			if (prop.get("password") == null) {
+				log.error("未指定数据库密码password");
+			}
+			getConn(prop.get("dataIp").toString(), prop.get("port").toString(), prop.get("dataType").toString(),
+					prop.get("dbName").toString(), prop.get("username").toString(), prop.get("password").toString());
+		} else {
+			log.error("未存在配置信息");
+		}
+	}
 }

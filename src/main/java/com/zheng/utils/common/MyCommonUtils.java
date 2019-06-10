@@ -4,13 +4,21 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * 功能描述： model类型转换
- * 
- * @Package: com.zheng.utils.common
- * @author: zheng
- */
-public class ModelTypeChange {
+public class MyCommonUtils {
+	/**
+	 * 功能描述： 判断对象是否为空
+	 * 
+	 * @author: zheng
+	 * @param o
+	 * @return
+	 */
+	public static Boolean isEmpty(Object o) {
+		if (o == null || o.toString().equals("")) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * 功能描述： 将对象转为map
 	 * 
@@ -56,5 +64,4 @@ public class ModelTypeChange {
 		}
 		return obj;
 	}
-
 }

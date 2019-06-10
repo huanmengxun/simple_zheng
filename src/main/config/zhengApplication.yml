@@ -6,4 +6,9 @@ dataSource:
     dbName: javatest
     username: root
     password: huan
-  
+    
+mylogger:
+  console:
+    level: debug
+    
+    
