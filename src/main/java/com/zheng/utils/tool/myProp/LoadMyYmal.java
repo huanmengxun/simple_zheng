@@ -1,4 +1,4 @@
-package com.zheng.localProperties;
+package com.zheng.utils.tool.myProp;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -6,13 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.Yaml;
 
-import com.zheng.localProperties.commons.MyConstants;
+import com.zheng.utils.common.constants.MyConstants;
+import com.zheng.utils.tool.myProp.impl.MyConfig;
 
 /**
  * 功能描述：加载本地配置文件--指定只能加载一个配置文件
@@ -20,16 +20,29 @@ import com.zheng.localProperties.commons.MyConstants;
  * @Package: com.zheng.localProperties
  * @author: zheng
  */
-public class LoadMyYmal {
+public class LoadMyYmal implements MyConfig {
 
 	private final static DumperOptions OPTIONS = new DumperOptions();
 	private static String Config_FILE_PATH = MyConstants.getConfigPath() + "zhengApplication.yml";
 
-	private static LinkedHashMap<Object, Object> localConfig = new LinkedHashMap<>();
-
+	private static Map<Object, Object> localConfig = new HashMap<>();
+	private static volatile LoadMyYmal INSTANCE;
 	static {
 		// 将默认读取的方式设置为块状读取
 		OPTIONS.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+	}
+
+	private LoadMyYmal() {
+
+	}
+
+	public static LoadMyYmal getInstance() {
+		if (INSTANCE == null) {
+			synchronized (LoadMyYmal.class) {
+				INSTANCE = new LoadMyYmal();
+			}
+		}
+		return INSTANCE;
 	}
 
 	/**
@@ -38,7 +51,7 @@ public class LoadMyYmal {
 	 * @author: zheng
 	 * @return
 	 */
-	public static LinkedHashMap<Object, Object> getConfigMsg() {
+	public Map<Object, Object> getConfigMsg() {
 		return getConfigMsg(Config_FILE_PATH);
 	}
 
@@ -49,7 +62,7 @@ public class LoadMyYmal {
 	 * @param configPath
 	 * @return
 	 */
-	public static LinkedHashMap<Object, Object> getConfigMsg(String configPath) {
+	public Map<Object, Object> getConfigMsg(String configPath) {
 		if (configPath.equals(Config_FILE_PATH) && !localConfig.isEmpty()) {
 			return localConfig;
 		} else {
@@ -64,7 +77,7 @@ public class LoadMyYmal {
 	 * @param key
 	 * @return
 	 */
-	public static Object getConfigValueByKey(String key) {
+	public Object getConfigValueByKey(String key) {
 		Object o = getConfigMsg().get(key);
 		if (o == null) {
 			return getConfigValueByKey(getConfigMsg(), key);
@@ -79,7 +92,7 @@ public class LoadMyYmal {
 	 * @param key
 	 * @throws IOException
 	 */
-	public static void removeConfigByKey(String key) throws IOException {
+	public void removeConfigByKey(String key) {
 		removeConfigByKey(Config_FILE_PATH, key);
 	}
 
@@ -91,7 +104,7 @@ public class LoadMyYmal {
 	 * @param key        移除键
 	 * @throws IOException
 	 */
-	public static void removeConfigByKey(String configPath, String key) throws IOException {
+	public void removeConfigByKey(String configPath, String key) {
 		Map<Object, Object> dataMap = new HashMap<>();
 		dataMap = removeMap(localConfig, key);
 		reWriteConfig(configPath, dataMap);
@@ -106,7 +119,7 @@ public class LoadMyYmal {
 	 * @param value
 	 * @throws IOException
 	 */
-	public static void addKeyIntoConfig(String key, Object value) throws IOException {
+	public void addKeyIntoConfig(String key, Object value) {
 		addKeyIntoConfig(Config_FILE_PATH, key, value);
 	}
 
@@ -119,11 +132,11 @@ public class LoadMyYmal {
 	 * @param value      值
 	 * @throws IOException
 	 */
-	public static void addKeyIntoConfig(String configPath, String key, Object value) throws IOException {
+	public void addKeyIntoConfig(String configPath, String key, Object value) {
 		Map<Object, Object> dataMap = localConfig;
 		int firstPoint = key.indexOf('.');
 		if (firstPoint != -1 && firstPoint < key.length()) {
-			dataMap = (LinkedHashMap<Object, Object>) addMap(dataMap, key, value);
+			dataMap = (Map<Object, Object>) addMap(dataMap, key, value);
 		} else {
 			dataMap.put(key, value);
 		}
@@ -202,7 +215,7 @@ public class LoadMyYmal {
 	 * @param configPath
 	 * @return
 	 */
-	private static LinkedHashMap<Object, Object> reGetConfig(String configPath) {
+	private static Map<Object, Object> reGetConfig(String configPath) {
 		try {
 			Yaml yaml = new Yaml(OPTIONS);
 			localConfig.clear();
@@ -232,14 +245,14 @@ public class LoadMyYmal {
 		}
 	}
 
-	private static Object getConfigValueByKey(LinkedHashMap<Object, Object> yamlMap, String key) {
+	private static Object getConfigValueByKey(Map<Object, Object> yamlMap, String key) {
 		Object o = yamlMap.get(key);
 		if (o == null) {
 			int firstPoint = key.indexOf('.');
 			if (firstPoint > 0) {
 				Object firstVal = yamlMap.get(key.substring(0, firstPoint));
-				if (firstVal instanceof LinkedHashMap) {
-					return getConfigValueByKey((LinkedHashMap<Object, Object>) firstVal, key.substring(firstPoint+1));
+				if (firstVal instanceof HashMap) {
+					return getConfigValueByKey((Map<Object, Object>) firstVal, key.substring(firstPoint + 1));
 				}
 			}
 			return null;

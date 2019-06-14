@@ -7,11 +7,14 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import com.zheng.utils.file.MyFileNameUtils;
-import com.zheng.utils.internet.InternerUrl;
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.internet.InternUtils;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
 
 /**
  * 功能描述：文件读写
@@ -21,6 +24,67 @@ import com.zheng.utils.mylog.MyLoggerInfo;
  */
 public class MyFileUtils {
 	static MyLoggerInfo log=MyLoggerInfo.getInstance();
+	/**
+	 * 功能描述：按 文件大小 排序递增
+	 *
+	 * @param files
+	 * @return
+	 */
+	public static File[] orderByLength(File[] files) {
+		List<File> fileList = Arrays.asList(files);
+		Collections.sort(fileList, new Comparator<File>() {
+			public int compare(File f1, File f2) {
+				long diff = f1.length() - f2.length();
+				return diff > 0 ? 1 : diff < 0 ? -1 : 0;
+			}
+
+			public boolean equals(Object obj) {
+				return true;
+			}
+		});
+		return files;
+	}
+
+	/**
+	 * 功能描述：按 文件修改日期：递增
+	 * 
+	 * @param files
+	 * @return
+	 */
+	public static File[] orderByDate(File[] files) {
+		Arrays.sort(files, new Comparator<File>() {
+			public int compare(File f1, File f2) {
+				long diff = f1.lastModified() - f2.lastModified();
+				return diff > 0 ? 1 : diff < 0 ? -1 : 0;
+			}
+
+			public boolean equals(Object obj) {
+				return true;
+			}
+		});
+		return files;
+	}
+
+	/**
+	 * 功能描述： 按照文件名排序
+	 * 
+	 * @param files
+	 * @return
+	 */
+	public static File[] orderByName(File[] files) {
+		List<File> fileList = Arrays.asList(files);
+		Collections.sort(fileList, new Comparator<File>() {
+			@Override
+			public int compare(File o1, File o2) {
+				if (o1.isDirectory() && o2.isFile())
+					return -1;
+				if (o1.isFile() && o2.isDirectory())
+					return 1;
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
+		return files;
+	}
 	/**
 	 * 功能描述：将list里面的字符串放置在指定文件夹之中
 	 * @author: zheng
@@ -65,7 +129,7 @@ public class MyFileUtils {
 		String filename = "";
 		switch (nameRegular.toUpperCase()) {
 		case "orgin":
-			filename = path + File.separator + url.substring(url.lastIndexOf("/"));
+			filename = path + File.separator + url.substring(url.lastIndexOf('/'));
 			break;
 		default:// 默认为time
 //			filename = FileNameUtils.getTimeName(url, path);
@@ -75,7 +139,7 @@ public class MyFileUtils {
 		if (file.exists()) {
 			return;
 		}
-		HttpURLConnection connection = InternerUrl.urlConnection(MyFileNameUtils.validateStartUrl(url));
+		HttpURLConnection connection = InternUtils.getUrlConn(MyFileNameUtils.validateStartUrl(url));
 		if (connection == null)
 			return;
 		try (DataInputStream dataInputStream = new DataInputStream(connection.getInputStream());

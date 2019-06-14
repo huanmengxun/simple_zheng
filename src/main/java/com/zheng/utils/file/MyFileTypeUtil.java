@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
 
 public class MyFileTypeUtil {
 	// 缓存文件头信息-文件头信息
@@ -93,7 +93,7 @@ public class MyFileTypeUtil {
 	 * @return
 	 */
 	public static String getFileSuffix(String fileName) {
-		int lastPoint = fileName.lastIndexOf(".");
+		int lastPoint = fileName.lastIndexOf('.');
 		if (lastPoint == -1) {
 			return "none";
 		} else {

@@ -25,7 +25,6 @@ public class MyApplication {
 	}
 
 	public static void main(String[] args) {
-    	MyDataBaseConn.getConnByProperties();
     	System.out.println("测试");
 		new LoginWindow().startup();
 	}

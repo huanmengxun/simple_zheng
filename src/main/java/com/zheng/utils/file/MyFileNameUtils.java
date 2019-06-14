@@ -3,7 +3,7 @@ package com.zheng.utils.file;
 import java.io.File;
 import java.util.Date;
 
-import com.zheng.localProperties.commons.MyConstants;
+import com.zheng.utils.common.constants.MyConstants;
 
 /**
  * 功能描述：和文件名有关的一些方法
@@ -101,10 +101,10 @@ public class MyFileNameUtils {
 	 * @return
 	 */
 	public static String getFileNameByUrl(String url) {
-		if (url.length() == url.lastIndexOf("/")) {
+		if (url.length() == url.lastIndexOf('/')) {
 			return url;
 		} else {
-			return url.substring(url.lastIndexOf("/"), url.length());
+			return url.substring(url.lastIndexOf('/'), url.length());
 		}
 	}
 }

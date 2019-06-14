@@ -16,7 +16,6 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
-import org.junit.Test;
 
 public class AESDemo {
     
@@ -24,8 +23,6 @@ public class AESDemo {
     
     public static void jdkAES (){
         try {
-            
-            
             //生成Key
             KeyGenerator keyGenerator = KeyGenerator.getInstance("AES");
             keyGenerator.init(128);  
@@ -42,29 +39,19 @@ public class AESDemo {
             cipher.init(Cipher.ENCRYPT_MODE, key);
             byte[] encodeResult = cipher.doFinal(AESDemo.src.getBytes());
             System.out.println("AESencode : " + Hex.toHexString(encodeResult) );
-            
             //解密
             cipher.init(Cipher.DECRYPT_MODE, key);
             byte[] decodeResult = cipher.doFinal(encodeResult);
             System.out.println("AESdecode : " + new String (decodeResult));
-            
-            
-        
-        
         } catch (NoSuchAlgorithmException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         } catch (InvalidKeyException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         } catch (BadPaddingException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         }
     
@@ -97,36 +84,24 @@ public class AESDemo {
             cipher.init(Cipher.DECRYPT_MODE, key);
             byte[] decodeResult = cipher.doFinal(encodeResult);
             System.out.println("AESdecode : " + new String (decodeResult));
-            
-            
-        
-        
         } catch (NoSuchAlgorithmException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         } catch (NoSuchPaddingException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         } catch (InvalidKeyException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         } catch (IllegalBlockSizeException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         } catch (BadPaddingException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         } catch (NoSuchProviderException e) {
-            // TODO 自动生成的 catch 块
             e.printStackTrace();
         }
     
     }
-    
-    @Test
-    public static void test() {
+    public static void main(String[] args) {
         jdkAES();
         bcAES();
-    }
+	}
 
 }

@@ -4,12 +4,15 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
 
-public class MyDataBaseCommonQuery {
+public class MyDataBaseComQuery {
 
 	static MyLoggerInfo log = MyLoggerInfo.getInstance();
 
@@ -21,15 +24,19 @@ public class MyDataBaseCommonQuery {
 	 * @param fileName   文件名称
 	 * @param tableNames 要导出数据以及建表语句的表
 	 */
-	public static List<String> genTabData(String... tableNames) {
+	public static List<String> genTabData(MyDataBaseConn conn,String... tableNames) {
 		List<String> resultSql = new ArrayList<>();
 		for (String tableName : tableNames) {
-			List<String> createSqls = MyDataBaseCommonQuery.genCreateTab(tableName);
+			List<String> createSqls = MyDataBaseComQuery.genCreateTab(conn,tableName);
 			resultSql.addAll(createSqls);
-			List<String> exportSqls = MyDataBaseCommonQuery.genExportSql(tableName, "select * from " + tableName);
+			List<String> exportSqls = MyDataBaseComQuery.genExportSql(conn,tableName, "select * from " + tableName);
 			resultSql.addAll(exportSqls);
 		}
 		return resultSql;
+	}
+
+	public static void main(String[] args) {
+
 	}
 
 	/**
@@ -38,7 +45,7 @@ public class MyDataBaseCommonQuery {
 	 * @author: zheng
 	 * @return
 	 */
-	public static List<String> getAllTables() {
+	public static List<String> getAllTables(MyDataBaseConn conn) {
 		List<String> tableList = new ArrayList<>();
 		String sql = "";
 		switch (MyDataBaseConn.DATA_TYPE.toUpperCase()) {
@@ -46,12 +53,15 @@ public class MyDataBaseCommonQuery {
 			sql = "show tables";
 			break;
 		case "ORACLE":
-			sql = "";
+			sql = "select table_name from user_tables";
+//			where owner=upper('"+MyDataBaseConn.USER_NAME+"') ";
 			break;
 		default:
 			return null;
 		}
-		try (ResultSet rs = MyDataBaseConn.getResultSet(sql, "query");) {
+		
+		//TODO
+		try (ResultSet rs = conn.getResultSetByQuery(sql);) {
 			if (rs == null) {
 				return null;
 			}
@@ -72,10 +82,11 @@ public class MyDataBaseCommonQuery {
 	 * @param tables 表名列表
 	 * @return
 	 */
-	public static List<String> genCreateTab(String... tables) {
+	public static List<String> genCreateTab(MyDataBaseConn conn,String... tables) {
 		List<String> exportCreateTabString = new ArrayList<>();
 		for (String tab : tables) {
-			List<Map<String, Object>> result = MyDataBaseConn.query("show create table " + tab);
+			
+			List<Map<String, Object>> result = conn.query("show create table " + tab);
 			if (result != null && result.size() > 0) {
 				exportCreateTabString.add(result.get(0).get("Create Table").toString());
 			} else {
@@ -93,10 +104,11 @@ public class MyDataBaseCommonQuery {
 	 * @param sql
 	 * @return
 	 */
-	public static List<String> genExportSql(String tableName, String sql) {
+	public static List<String> genExportSql(MyDataBaseConn conn,String tableName, String sql) {
 		List<String> exportSql = new ArrayList<>();
-		List<String> fieldName = getTabAllField(tableName);
-		try (ResultSet rs = MyDataBaseConn.getResultSet(sql, "query");) {
+		List<String> fieldName = getTabAllField(conn,tableName);
+		//TODO
+		try (ResultSet rs = conn.getResultSetByQuery(sql);) {
 			if (rs == null) {
 				exportSql.add("  --  表" + tableName + "不存在");
 				return exportSql;
@@ -138,21 +150,20 @@ public class MyDataBaseCommonQuery {
 	 * @param tableName
 	 * @return
 	 */
-	public static List<String> getTabAllField(String tableName) {
+	public static List<String> getTabAllField(MyDataBaseConn conn,String tableName) {
 		List<String> fieldName = new ArrayList<>();
 		String sql = "";
 		if (MyDataBaseConn.DATA_TYPE.toUpperCase().equals("MYSQL")) {
-			sql = "desc " + tableName;
-			List<Map<String, Object>> fieldList = MyDataBaseConn.query(sql);
+			sql = "desc "+tableName;
+			List<Map<String, Object>> fieldList = conn.queryParam(sql,tableName);
 			if (fieldList == null)
 				return null;
 			for (Map<String, Object> field : fieldList) {
 				fieldName.add(field.get("Field").toString());
 			}
 		} else if (MyDataBaseConn.DATA_TYPE.toUpperCase().equals("ORACLE")) {
-			sql = "SELECT t.COLUMN_NAME FROM User_Tab_Cols t, User_Col_Comments t1 WHERE t.table_name = t1.table_name AND t.column_name = t1.column_name  and t1.table_name = '"
-					+ tableName.toUpperCase() + "'";
-			List<Map<String, Object>> fieldList = MyDataBaseConn.query(sql);
+			sql = "SELECT t.COLUMN_NAME FROM User_Tab_Cols t, User_Col_Comments t1 WHERE t.table_name = t1.table_name AND t.column_name = t1.column_name  and t1.table_name = ? ";
+			List<Map<String, Object>> fieldList = conn.queryParam(sql,tableName.toUpperCase());
 			for (Map<String, Object> field : fieldList) {
 				fieldName.add(field.get("COLUMN_NAME").toString());
 			}
@@ -160,5 +171,47 @@ public class MyDataBaseCommonQuery {
 			return null;
 		}
 		return fieldName;
+	}
+
+	
+	/**
+	 * 功能描述：生成excel头
+	 *
+	 * @author: zheng
+	 * @param sql
+	 * @return
+	 */
+	public static Map<String, List<?>> getExcelData(MyDataBaseConn conn,String sql) {
+		//TODO
+		try (ResultSet rs = conn.getResultSetByQuery(sql);) {
+			if (rs == null) {
+				return null;
+			}
+			ResultSetMetaData md = rs.getMetaData();
+			int col = md.getColumnCount();
+			List<List<Object>> header = new ArrayList<>();
+			List<List<Object>> tableData = new ArrayList<>();
+			IntStream.rangeClosed(1, col).forEach(i -> {
+				try {
+					header.add(Arrays.asList(md.getColumnLabel(i)));
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			});
+			while (rs.next()) {
+				List<Object> lineData = new ArrayList<>();
+				for (int i = 1; i <= col; i++) {
+					lineData.add(rs.getObject(i));
+				}
+				tableData.add(lineData);
+			}
+			Map<String, List<?>> excelDataMap = new HashMap<>();
+			excelDataMap.put("tableData", tableData);
+			excelDataMap.put("header", header);
+			return excelDataMap;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

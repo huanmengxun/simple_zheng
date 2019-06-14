@@ -1,4 +1,4 @@
-package com.zheng.localProperties.commons;
+package com.zheng.utils.common.constants;
 
 import java.util.Properties;
 

@@ -10,13 +10,13 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.zheng.utils.file.MyFileTypeUtil;
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
 
 public class MyImageUtils {
 	static MyLoggerInfo log = MyLoggerInfo.getInstance();
 
 	public static void main(String[] args) throws IOException {
-		allImgToPdf("E:\\IMG", "F:\\1.pdf");
+		allImgToPdf( "D:\\《内外兼修(程序员的成长之路)》2.pdf","D:\\《内外兼修(程序员的成长之路)》");
 	}
 
 	/**
@@ -49,11 +49,15 @@ public class MyImageUtils {
 				} else {
 					log.warn("文件{}不存在", imagePath);
 				}
+				Thread.sleep(10);
 			}
 		} catch (DocumentException de) {
 			System.out.println(de.getMessage());
 		} catch (IOException ioe) {
 			System.out.println(ioe.getMessage());
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		document.close();
 		fos.flush();
@@ -81,13 +85,16 @@ public class MyImageUtils {
 				document.setPageSize(PageSize.A4);
 				// 打开文档
 				document.open();
+				log.info("开始转换");
+				//listFiles是无序的，需要进行排序
 				for (File imagePath : folder.listFiles()) {
+					log.info(imagePath.getName());
 					if(MyFileTypeUtil.isIamge(imagePath)) {
 						// 读取一个图片
 						Image image = handlerImageToA4(Image.getInstance(imagePath.getAbsolutePath()));
 						// //设置图片的绝对位置
 						document.add(image);
-						log.info("插入成功");
+						log.info("插入成功{}",imagePath.getName());
 					}else {
 						log.warn("文件{}并不是图片",imagePath);
 					}

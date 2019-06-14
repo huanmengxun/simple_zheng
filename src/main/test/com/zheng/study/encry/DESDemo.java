@@ -20,7 +20,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.util.encoders.Hex;
 import org.junit.Test;
 
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
 
 public class DESDemo {
     

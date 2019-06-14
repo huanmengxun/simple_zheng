@@ -11,19 +11,40 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.zheng.localProperties.LoadMyProperties;
-import com.zheng.localProperties.LoadMyYmal;
-import com.zheng.localProperties.commons.MyConstants;
-import com.zheng.utils.dataUtil.model.MyDataBaseModel;
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.common.MyComUtils;
+import com.zheng.utils.common.constants.MyConstants;
+import com.zheng.utils.tool.myProp.LoadMyProp;
+import com.zheng.utils.tool.myProp.LoadMyYmal;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
 
 public class MyDataBaseConn {
-	public static String MYSQL = "MYSQL";
-	public static String ORACLE = "ORACLE";
-	public static String H2 = "H2";
+	protected static String MYSQL = "MYSQL";
+	protected static String ORACLE = "ORACLE";
+	protected static String H2 = "H2";
+
 	public static Connection CONN = null;
-	public static String DATA_TYPE = null;
+	protected static String DATA_TYPE ;
+	protected static String USER_NAME ;
+
+	protected static String DATA_IP ;
+	protected static String PORT ;
+
+	protected static String DBNAME ;
+	protected static String PASS_WORD ;
+
+
 	static MyLoggerInfo log = MyLoggerInfo.getInstance();
+
+	private MyDataBaseConn() {
+	}
+
+	private static class MyDataBaseInstance {
+		private final static MyDataBaseConn INSTANCE = new MyDataBaseConn();
+	}
+
+	public static MyDataBaseConn getInstance() {
+		return MyDataBaseInstance.INSTANCE;
+	}
 
 //	/* 查询数据库 ‘mammothcode’ 所有表注释 */
 //	SELECT TABLE_NAME,TABLE_COMMENT FROM information_schema.TABLES WHERE table_schema='mammothcode';
@@ -40,18 +61,17 @@ public class MyDataBaseConn {
 	 * @author: zheng
 	 * @return
 	 */
-	public static void getConnByYml() {
-		Object obj = LoadMyYmal.getConfigValueByKey("dataSource.master");
+	public void getConnByYml() {
+		Object obj = LoadMyYmal.getInstance().getConfigValueByKey("dataSource.master");
 		if (obj != null && obj instanceof Map) {
 			getConnByMap((Map<String, Object>) obj);
 		} else {
 			log.warn("链接失败");
 		}
-
 	}
 
-	public static void getConnByProperties() {
-		getConnByProperties(null);
+	public void getConnByProp() {
+		getConnByProp(null);
 	}
 
 	/**
@@ -60,71 +80,53 @@ public class MyDataBaseConn {
 	 * @param propertiesPath 配置文件
 	 * @return
 	 */
-	public static void getConnByProperties(String propertiesPath) {
-		Map<Object, Object> prop = LoadMyProperties.getConfigMsg();
+	public void getConnByProp(String propertiesPath) {
+		Map<Object, Object> prop = LoadMyProp.getInstance().getConfigMsg();
 		getConnByMap(prop, "sql." + prop.get("sql.master") + ".");
 	}
 
-	public static void getConnn(MyDataBaseModel model) {
-		getConn(model.getDataIp(), model.getPort(), model.getDateType(), model.getDbName(), model.getUsername(),
-				model.getPassword());
-	}
-
-	public static void getConn(String dataIp, String port, String dataType, String dbName, String username,
-			String password) {
+	public void getConn(String dataIp, String port, String dataType, String dbName, String username, String password) {
 		String driverName = "";
-		if (dataIp == null || dataIp.equals(""))
+		if (MyComUtils.isEmpty(dataIp))
 			dataIp = "127.0.0.1";
-		String portStr = "";
-		if (port != null) {
-			portStr = ":" + port;
-		}
+		String portStr = port == null ? "" : ":" + port;
 		StringBuilder url = new StringBuilder();
 		switch (dataType.toUpperCase()) {
 		case "MYSQL":
-			if (portStr.equals(""))
-				portStr = ":3306";
-			url.append(MyConstants.DataBaseConstants.MYSQL.getPrefixUrl());
-			url.append(dataIp);
-			url.append(portStr);
-			url.append(MyConstants.DataBaseConstants.MYSQL.getUrlSplit());
-			url.append(dbName);
-			url.append("?serverTimezone=UTC&useUnicode=true&characterEncoding=utf8&useSSL=false");
+			url = MyDataBaseUtils.splicMySqlUrl(url, portStr, dataIp, dbName);
 			driverName = MyConstants.DataBaseConstants.MYSQL.getDriverName();
 			break;
 		case "ORACLE":
-			if (portStr.equals(""))
-				portStr = ":1521";
-			url.append(MyConstants.DataBaseConstants.ORACLE.getPrefixUrl());
-			url.append(dataIp);
-			url.append(portStr);
-			url.append(MyConstants.DataBaseConstants.ORACLE.getUrlSplit());
-			url.append(dbName);
+			url = MyDataBaseUtils.splicOracleUrl(url, portStr, dataIp, dbName);
 			driverName = MyConstants.DataBaseConstants.ORACLE.getDriverName();
 			break;
 		case "H2":
-			url.append(MyConstants.DataBaseConstants.H2.getPrefixUrl());
-			url.append(dataIp);
-			url.append(portStr);
-			url.append(MyConstants.DataBaseConstants.H2.getUrlSplit());
-			url.append(dbName);
+			url.append(MyConstants.DataBaseConstants.H2.getPrefixUrl())
+				.append(dataIp).append(portStr)
+				.append(MyConstants.DataBaseConstants.H2.getUrlSplit())
+				.append(dbName);
 			driverName = MyConstants.DataBaseConstants.ORACLE.getDriverName();
 			break;
 		default:
 			return;
 		}
-		if (username == null || username.equals("")) {
+		if (MyComUtils.isEmpty(username)) {
 			username = "root";
 		}
-		if (password == null || password.equals("")) {
+		if (MyComUtils.isEmpty(password)) {
 			password = "root";
 		}
 		try {
-			System.out.println("开始连接");
 			Class.forName(driverName);
-			log.info("{},{},{}", url, username, password);
+//			log.info("{},{},{}", url, username, password);
 			CONN = DriverManager.getConnection(url.toString(), username, password);
 			DATA_TYPE = dataType;
+			USER_NAME = username;
+			DATA_IP =dataIp;
+			PORT =port;
+			DBNAME =dbName;
+			PASS_WORD =password;
+			
 			log.info("{}数据库连接成功", dbName.toUpperCase());
 		} catch (ClassNotFoundException e) {
 			log.error(e.getMessage());
@@ -135,35 +137,8 @@ public class MyDataBaseConn {
 		}
 	}
 
-//	public static void update(String sql,Map<String,Object> param) {
-//		try {
-//			ConnStatus();
-//		} catch (Exception e1) {
-//			e1.printStackTrace();
-//		}
-//		try(PreparedStatement pstmt= (PreparedStatement) CONN.prepareStatement(sql)){
-//			pstmt.executeUpdate(sql);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	public static int update(String sql) {
-//		int i=-1;
-//		try {
-//			ConnStatus();
-//		} catch (Exception e1) {
-//			e1.printStackTrace();
-//		}
-//		try(PreparedStatement pstmt= (PreparedStatement) CONN.prepareStatement(sql)){
-//			i=pstmt.executeUpdate(sql);
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
-//		return i;
-//	}
-
-	public static List<Map<String, Object>> query(String sql) {
-		return queryByParams(sql);
+	public List<Map<String, Object>> query(String sql) {
+		return queryParam(sql, 0);
 	}
 
 	/**
@@ -174,10 +149,8 @@ public class MyDataBaseConn {
 	 * @return
 	 * @throws Exception
 	 */
-	public static List<Map<String, Object>> queryByParams(String sql, Object... param) {
-		sql = MyDataBaseUtils.handleSql(sql, param);
-		try (ResultSet rs = getResultSet(sql, "query");) {
-			log.info(sql);
+	public List<Map<String, Object>> queryParam(String sql, Object... param) {
+		try (ResultSet rs = getResultSetByQuery(sql, param);) {
 			if (rs == null) {
 				return null;
 			}
@@ -191,7 +164,7 @@ public class MyDataBaseConn {
 				}
 				resultList.add(resultVal);
 			}
-			log.info(resultList);
+			log.info(resultList.size());
 			return resultList;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -199,23 +172,26 @@ public class MyDataBaseConn {
 		return null;
 	}
 
-	protected static ResultSet getResultSet(String sql, String type, Object... param) {
+	protected ResultSet getResultSetByQuery(String sql, Object... param) {
+		return getResultSetByQuery(sql, null, null, param);
+	}
+
+	protected ResultSet getResultSetByQuery(String sql, Long limitForm, Long limitNum, Object... param) {
 		PreparedStatement ps = null;
-		type = type == null ? "query" : type;
+		sql = MyDataBaseUtils.handleSql(sql, param);
+		if (limitNum != null) {
+			if (limitForm != null) {
+
+			}
+		}
+		log.info(sql);
 		try {
 			if (CONN == null) {
 				throw new Exception("请创建连接");
 			}
 			ResultSet rs = null;
-			switch (type) {
-			case "query":
-				ps = CONN.prepareStatement(sql);
-				rs = ps.executeQuery();
-				break;
-			default:
-				ps = CONN.prepareStatement(sql);
-				rs = ps.executeQuery();
-			}
+			ps = CONN.prepareStatement(sql);
+			rs = ps.executeQuery();
 			return rs;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -223,7 +199,9 @@ public class MyDataBaseConn {
 			e.printStackTrace();
 		}
 		return null;
+
 	}
+
 //	private static int delete(String name) {
 //	    Connection conn = getConn();
 //	    int i = 0;
@@ -243,7 +221,7 @@ public class MyDataBaseConn {
 
 //	--------------私有方法------------------
 
-	private static void getConnByMap(Map<?, Object> prop, String preFix) {
+	private void getConnByMap(Map<?, Object> prop, String preFix) {
 		if (!prop.isEmpty()) {
 			if (prop.get(preFix + "dataType") == null) {
 				log.error("未指定dataType数据库类型");
@@ -265,7 +243,7 @@ public class MyDataBaseConn {
 		}
 	}
 
-	private static void getConnByMap(Map<?, Object> prop) {
+	private void getConnByMap(Map<?, Object> prop) {
 		if (prop != null) {
 			if (prop.get("dataType") == null) {
 				log.error("未指定dataType名称是为那个数据库");
@@ -285,4 +263,6 @@ public class MyDataBaseConn {
 			log.error("未存在配置信息");
 		}
 	}
+	
+
 }

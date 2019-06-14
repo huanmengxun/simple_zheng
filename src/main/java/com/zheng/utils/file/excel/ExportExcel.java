@@ -1,4 +1,4 @@
-package com.zheng.utils.file.simpleExcel;
+package com.zheng.utils.file.excel;
 /**
  * 功能描述：excel文件的导出
  * 
@@ -17,8 +17,9 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.zheng.utils.dataUtil.MyDataBaseOperator;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
+import com.zheng.utils.dataUtil.MyDataBaseComQuery;
 import com.zheng.utils.dataUtil.MyDataBaseConn;
-import com.zheng.utils.mylog.MyLoggerInfo;
 
 public class ExportExcel {
 	static MyLoggerInfo log = MyLoggerInfo.getInstance();
@@ -32,8 +33,8 @@ public class ExportExcel {
 	 * @param fileName 文件名称
 	 * @throws Exception 
 	 */
-	public static void exportSqlToExcel(String sql, String filePath,String fileName) throws Exception {
-		Map<String, List<?>> result = MyDataBaseOperator.getExcelData(sql);
+	public static void exportSqlToExcel(MyDataBaseConn myQuery,String sql, String filePath,String fileName) throws Exception {
+		Map<String, List<?>> result = MyDataBaseComQuery.getExcelData(myQuery,sql);
 		if(result==null) {
 			log.error("存在错误");
 			return;

@@ -1,8 +1,9 @@
-package com.zheng.localProperties.commons;
+package com.zheng.utils.common.constants;
 
 import java.io.File;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.lang3.time.DateUtils;
@@ -15,6 +16,10 @@ import org.apache.commons.lang3.time.DateUtils;
  * @date: 2019年5月18日 上午12:41:40
  */
 public class MyConstants {
+	private MyConstants() {
+
+	}
+
 	/**
 	 * 指定配置文件路径
 	 */
@@ -42,6 +47,14 @@ public class MyConstants {
 		return localStaticResources;
 	}
 
+	public static void main(String[] args) {
+		String value="18446081979";
+		boolean isture=Pattern.matches(RegularConstants.MOBILE, 
+				value);
+//		System.out.println(Pattern.matches("\\w","a"));
+		System.out.println(isture);
+	}
+
 	/**
 	 * 功能描述：常见正则
 	 * 
@@ -50,29 +63,43 @@ public class MyConstants {
 	 */
 	public class RegularConstants {
 		/**
-		 * 邮箱正则
-		 */
-		public static final String EMAIL = "";
-		/**
-		 * 手机正则
-		 */
-		public static final String PHONE = "";
-		/**
 		 * 移动电话正则
 		 */
-		public static final String MOBILE = "";
-		/**
-		 * 常见用户名正则
-		 */
-		public static final String USERNAME = "";
-		/**
-		 * 常见密码正则
-		 */
-		public static final String PASSWORD = "";
+		public static final String MOBILE = "^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\\d{8}$";
+
 		/**
 		 * 常见url正则
 		 */
-		public static final String URL = "";
+		public static final String URL = "^((http|https)://)?([\\w-]+.)+[\\w-]+(/[\\w-.?%&=]*)?$";
+		
+		
+		/**
+		 * IP正则
+		 */
+		public static final String IP = "((?:(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d))";
+
+		/**
+		 * 邮箱正则
+		 */
+		public static final String EMAIL = "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$";
+//		/**
+//		 * 手机正则
+//		 */
+//		public static final String PHONE = "";
+//		/**
+//		 * 常见用户名正则
+//		 */
+//		public static final String USERNAME = "";
+//		/**
+//		 * 常见密码正则
+//		 */
+//		public static final String PASSWORD = "";
+		
+//		IP地址：((?:(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d?\\d))
+		
+//		()表示捕获分组，()会把每个分组里的匹配的值保存起来，使用$n(n是一个数字，表示第n个捕获组的内容)
+//		(?:)表示非捕获分组，和捕获分组唯一的区别在于，非捕获分组匹配的值不会保存起来
+		
 //		一、校验数字的表达式
 //		数字：^[0-9]*$
 //		n位的数字：^\d{n}$

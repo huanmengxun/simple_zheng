@@ -1,4 +1,4 @@
-package com.zheng.localProperties.commons;
+package com.zheng.utils.common.constants;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
 
 /**
  * 功能描述：电脑常量，需要调用方法进行获取
@@ -29,15 +29,16 @@ public class ComputerConstants {
 	 * @return
 	 */
 	public static String getLocalIp() {
+		String hostAddress=null;
 		try {
 			InetAddress address = InetAddress.getLocalHost();
 			log.info("本机地址{}", address);
-			return address.getHostAddress();
+			hostAddress=address.getHostAddress();
 		} catch (UnknownHostException e) {
 //			log.warn("错误信息{}",e.getMessage());
 			e.printStackTrace();
 		}
-		return null;
+		return hostAddress;
 	}
 
 	public static List<String> getLocalIps() {

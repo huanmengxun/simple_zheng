@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 
 import org.junit.Test;
 
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
 
 /*
 MD5(Message Digest algorithm 5，信息摘要算法) 

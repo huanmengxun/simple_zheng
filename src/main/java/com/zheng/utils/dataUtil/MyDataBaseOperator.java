@@ -3,19 +3,11 @@ package com.zheng.utils.dataUtil;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.IntStream;
 
-import com.zheng.utils.common.MyCommonUtils;
+import com.zheng.utils.common.MyComUtils;
 import com.zheng.utils.file.action.MyFileUtils;
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
 
 public class MyDataBaseOperator {
 
@@ -28,13 +20,13 @@ public class MyDataBaseOperator {
 	 * @param folderPath 导出文件存放路径
 	 * @param fileName   导出数据库文件名称
 	 */
-	public static void exportDataBaseData(String folderPath, String fileName) {
+	public static void exportDataBaseData(MyDataBaseConn myQuery,String folderPath, String fileName) {
 		File file = MyDataBaseUtils.handleFile(folderPath, fileName);
-		List<String> tables = MyDataBaseCommonQuery.getAllTables();
+		List<String> tables = MyDataBaseComQuery.getAllTables(myQuery);
 		if (tables.size() > 0) {
 			try (FileWriter fw = new FileWriter(file)) {
 				for (String table : tables) {
-					List<String> sqls = MyDataBaseCommonQuery.genTabData(table);
+					List<String> sqls = MyDataBaseComQuery.genTabData(myQuery,table);
 					for (String sql : sqls) {
 						fw.write(sql);
 						fw.write("\r\n");
@@ -56,8 +48,8 @@ public class MyDataBaseOperator {
 	 * @param tableNames 要导出数据以及建表语句的表
 	 */
 
-	public static void exportTabDataByDetaultName(String folderPath, String... tableNames) {
-		exportTabData(folderPath, tableNames[0], tableNames);
+	public static void exportTabDataByDetaultName(MyDataBaseConn myQuery,String folderPath, String... tableNames) {
+		exportTabData(myQuery,folderPath, tableNames[0], tableNames);
 	}
 
 	/**
@@ -68,16 +60,16 @@ public class MyDataBaseOperator {
 	 * @param fileName   文件名称
 	 * @param tableNames 要导出数据以及建表语句的表
 	 */
-	public static void exportTabData(String folderPath, String fileName, String... tableNames) {
-		if (MyCommonUtils.isEmpty(folderPath)) {
+	public static void exportTabData(MyDataBaseConn myQuery,String folderPath, String fileName, String... tableNames) {
+		if (MyComUtils.isEmpty(folderPath)) {
 			log.warn("未填写文件所在");
 			return;
 		}
-		if (MyCommonUtils.isEmpty(fileName)) {
+		if (MyComUtils.isEmpty(fileName)) {
 			log.warn("未填写指定文件名称");
 			return;
 		}
-		List<String> sqls = MyDataBaseCommonQuery.genTabData(tableNames);
+		List<String> sqls = MyDataBaseComQuery.genTabData(myQuery,tableNames);
 		if (sqls != null && sqls.size() > 0) {
 			File file = MyDataBaseUtils.handleFile(folderPath, fileName);
 			try (FileWriter fw = new FileWriter(file)) {
@@ -99,12 +91,12 @@ public class MyDataBaseOperator {
 	 * @param tableName  表名称
 	 * @param sql        sql语句
 	 */
-	public static void exportSql(String exportFile, String tableName, String sql) {
-		MyFileUtils.writeAppointFile(exportFile, MyDataBaseCommonQuery.genExportSql(tableName, sql));
+	public static void exportSql(MyDataBaseConn myQuery,String exportFile, String tableName, String sql) {
+		MyFileUtils.writeAppointFile(exportFile, MyDataBaseComQuery.genExportSql(myQuery,tableName, sql));
 	}
 
-	public static void exportSql(String exportFile, String tableName, String sql, boolean flag) {
-		MyFileUtils.writeAppointFile(exportFile, MyDataBaseCommonQuery.genExportSql(tableName, sql), flag);
+	public static void exportSql(MyDataBaseConn myQuery,String exportFile, String tableName, String sql, boolean flag) {
+		MyFileUtils.writeAppointFile(exportFile, MyDataBaseComQuery.genExportSql(myQuery,tableName, sql), flag);
 	}
 
 	/**
@@ -115,12 +107,12 @@ public class MyDataBaseOperator {
 	 * @param tables     导出建表语句的表
 	 * @return
 	 */
-	public static void exportCreateTabtoFileAndDefault(String exportFile, String... tables) {
-		exportCreateTabtoFile(exportFile, tables[0], tables);
+	public static void exportCreateTabtoFileAndDefault(MyDataBaseConn myQuery,String exportFile, String... tables) {
+		exportCreateTabtoFile(myQuery,exportFile, tables[0], tables);
 	}
 
-	public static void exportCreateTabtoFile(String exportFile, String fileName, String... tableNames) {
-		exportCreateTabtoFile(exportFile, fileName, false, tableNames);
+	public static void exportCreateTabtoFile(MyDataBaseConn myQuery,String exportFile, String fileName, String... tableNames) {
+		exportCreateTabtoFile(myQuery,exportFile, fileName, false, tableNames);
 	}
 
 	/**
@@ -133,11 +125,11 @@ public class MyDataBaseOperator {
 	 * @param isContinue是否续写
 	 * @return
 	 */
-	public static void exportCreateTabtoFile(String exportFile, String fileName, boolean isContinue,
+	public static void exportCreateTabtoFile(MyDataBaseConn myQuery,String exportFile, String fileName, boolean isContinue,
 			String... tableNames) {
 		File file = MyDataBaseUtils.handleFile(exportFile, fileName);
 		try (FileWriter fw = new FileWriter(file, isContinue)) {
-			List<String> createSqls = MyDataBaseCommonQuery.genCreateTab(tableNames);
+			List<String> createSqls = MyDataBaseComQuery.genCreateTab(myQuery,tableNames);
 			for (String sql : createSqls) {
 				fw.write(sql);
 				fw.write("\r\n\r\n");
@@ -147,44 +139,4 @@ public class MyDataBaseOperator {
 		}
 	}
 
-	/**
-	 * 功能描述：生成excel头
-	 *
-	 * @author: zheng
-	 * @param sql
-	 * @return
-	 */
-	public static Map<String, List<?>> getExcelData(String sql) {
-		try (ResultSet rs = MyDataBaseConn.getResultSet(sql, "query");) {
-			if (rs == null) {
-				return null;
-			}
-			ResultSetMetaData md = rs.getMetaData();
-			int col = md.getColumnCount();
-			List<List<Object>> header = new ArrayList<>();
-			List<List<Object>> tableData = new ArrayList<>();
-			IntStream.rangeClosed(1, col).forEach(i -> {
-				try {
-					header.add(Arrays.asList(md.getColumnLabel(i)));
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			});
-			while (rs.next()) {
-				List<Object> lineData = new ArrayList<>();
-				for (int i = 1; i <= col; i++) {
-					lineData.add(rs.getObject(i));
-				}
-				tableData.add(lineData);
-			}
-			Map<String, List<?>> excelDataMap = new HashMap<>();
-			excelDataMap.put("tableData", tableData);
-			excelDataMap.put("header", header);
-
-			return excelDataMap;
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
 }

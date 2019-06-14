@@ -1,13 +1,15 @@
-package com.zheng.localProperties;
+package com.zheng.utils.tool.myProp;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 import java.util.Properties;
 
-import com.zheng.localProperties.commons.MyConstants;
+import com.zheng.utils.common.constants.MyConstants;
+import com.zheng.utils.tool.myProp.impl.MyConfig;
 
 /**
  * 功能描述：读取本地数据库配置信息
@@ -15,9 +17,26 @@ import com.zheng.localProperties.commons.MyConstants;
  * @Package: com.zheng.localProperties
  * @author: zheng
  */
-public class LoadMyProperties {
+public class LoadMyProp implements MyConfig{
 	private static String Config_FILE_PATH = MyConstants.getConfigPath() + "zhengProperties.properties";
 	private static Properties localConfig = new Properties();
+
+	private static volatile LoadMyProp INSTANCE ;
+
+	private LoadMyProp() {
+
+	}
+
+	public static LoadMyProp getInstance() {
+		if (INSTANCE == null) {
+			synchronized (LoadMyProp.class) {
+				if (INSTANCE == null) {
+					INSTANCE = new LoadMyProp();
+				}
+			}
+		}
+		return INSTANCE;
+	}
 
 	/**
 	 * 功能描述：获取配置文件信息
@@ -25,7 +44,7 @@ public class LoadMyProperties {
 	 * @author: zheng
 	 * @return
 	 */
-	public static Properties getConfigMsg() {
+	public Map<Object, Object> getConfigMsg() {
 		return getConfigMsg(Config_FILE_PATH);
 	}
 
@@ -36,8 +55,8 @@ public class LoadMyProperties {
 	 * @param configPath
 	 * @return
 	 */
-	public static Properties getConfigMsg(String configPath) {
-		if (configPath.equals(Config_FILE_PATH)&&!localConfig.isEmpty()) {
+	public Map<Object, Object> getConfigMsg(String configPath) {
+		if (configPath.equals(Config_FILE_PATH) && !localConfig.isEmpty()) {
 			return localConfig;
 		} else {
 			return reGetConfig(configPath);
@@ -51,7 +70,7 @@ public class LoadMyProperties {
 	 * @param key
 	 * @return
 	 */
-	public static Object getConfigValueByKey(String key) {
+	public  Object getConfigValueByKey(String key) {
 		return localConfig.get(key);
 	}
 
@@ -62,7 +81,7 @@ public class LoadMyProperties {
 	 * @param key
 	 * @throws IOException
 	 */
-	public static void removeConfigByKey(String key) throws IOException {
+	public void removeConfigByKey(String key) {
 		removeConfigByKey(Config_FILE_PATH, key);
 	}
 
@@ -74,17 +93,16 @@ public class LoadMyProperties {
 	 * @param key        移除键
 	 * @throws IOException
 	 */
-	public static void removeConfigByKey(String configPath, String key) throws IOException {
-		if(localConfig.isEmpty()) {
+	public void removeConfigByKey(String configPath, String key) {
+		if (localConfig.isEmpty()) {
 			reGetConfig(configPath);
 		}
-		if(localConfig.containsKey(key)) {
+		if (localConfig.containsKey(key)) {
 			localConfig.remove(key);
 		}
 		reWriteConfig(configPath, localConfig);
 		reGetConfig(configPath);
 	}
-	
 
 	/**
 	 * 功能描述：根据默认配置路径添加键值 *
@@ -94,7 +112,7 @@ public class LoadMyProperties {
 	 * @param value
 	 * @throws IOException
 	 */
-	public static void addKeyIntoConfig(String key, Object value) throws IOException {
+	public void addKeyIntoConfig(String key, Object value) {
 		addKeyIntoConfig(Config_FILE_PATH, key, value);
 	}
 
@@ -103,11 +121,11 @@ public class LoadMyProperties {
 	 *
 	 * @author: zheng
 	 * @param configPath 配置文件路径
-	 * @param key         键
-	 * @param value       值
+	 * @param key        键
+	 * @param value      值
 	 * @throws IOException
 	 */
-	public static void addKeyIntoConfig(String configPath, String key, Object value) throws IOException {
+	public  void addKeyIntoConfig(String configPath, String key, Object value) {
 		localConfig.put(key, value);
 		reWriteConfig(configPath, localConfig);
 	}
@@ -135,16 +153,13 @@ public class LoadMyProperties {
 		}
 		return localConfig;
 	}
-	
-	
-	
+
 	/**
 	 * 功能描述： 重写配置文件
 	 * 
 	 * @author: zheng
-	 * @date: 2019年6月6日 下午3:21:43
 	 * @param configPath 路径
-	 * @param dataMap     配置信息
+	 * @param dataMap    配置信息
 	 */
 	private static void reWriteConfig(String configPath, Properties prop) {
 		try {

@@ -16,8 +16,8 @@ import org.apache.poi.ooxml.extractor.POIXMLTextExtractor;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.extractor.XWPFWordExtractor;
 
-import com.zheng.utils.common.MyCommonUtils;
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.common.MyComUtils;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
 
 public class MyWordUtils {
 	static MyLoggerInfo log=MyLoggerInfo.getInstance();
@@ -52,7 +52,7 @@ public class MyWordUtils {
 			try {
 				PDDocument doc = PDDocument.load(new File(pdfFile));
 				int pagenumber = doc.getNumberOfPages();
-				pdfFile = pdfFile.substring(0, pdfFile.lastIndexOf("."));
+				pdfFile = pdfFile.substring(0, pdfFile.lastIndexOf('.'));
 				String fileName = pdfFile + ".doc";
 				File file = new File(fileName);
 				if (!file.exists()) {
@@ -82,7 +82,7 @@ public class MyWordUtils {
 	 */
 	public static String fileExtractText(String filePath) throws Exception {
 		String text;
-		if (MyCommonUtils.isEmpty(filePath)) {
+		if (MyComUtils.isEmpty(filePath)) {
 			log.error("文件路径错误");
 			return "";
 		}

@@ -1,4 +1,4 @@
-package com.zheng.utils.file.simpleExcel;
+package com.zheng.utils.file.excel;
 
 import java.io.File;
 import java.io.FileOutputStream;

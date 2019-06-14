@@ -12,13 +12,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-import com.zheng.localProperties.commons.MyConstants;
 import com.zheng.utils.file.MyFileNameUtils;
-import com.zheng.utils.file.MyFileUtils;
-import com.zheng.utils.mylog.MyLoggerInfo;
+import com.zheng.utils.tool.mylog.MyLoggerInfo;
+import com.zheng.utils.common.constants.MyConstants;
+import com.zheng.utils.file.MyFileComUtils;
 
 public class FileOperation {
-	MyLoggerInfo log = MyLoggerInfo.getInstance();
+	static MyLoggerInfo log = MyLoggerInfo.getInstance();
 
 	/**
 	 * 功能描述：合并文件
@@ -51,7 +51,6 @@ public class FileOperation {
 			copyFileToNewPath(filePath1, newFileName, isLevelOldFile);
 			copyFileToNewPath(filePath2, newFileName, isLevelOldFile);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -89,7 +88,7 @@ public class FileOperation {
 					fw.write(c);
 				}
 				fw.write("\r\n");
-				System.out.println("复制成功");
+				log.info("复制成功");
 			} catch (Exception e) {
 			}
 			if (!isLevelOldFile) {
@@ -108,7 +107,7 @@ public class FileOperation {
 	 * 功能描述： 在该目录下删除含有指定名称的文件-遍历
 	 */
 	public static void deleteFileFolderByFolderPath(String folderPath, String fileKeyName, int fileFolderType) {
-		deleteFileFolderByFolderPath(folderPath, fileKeyName, MyFileUtils.FileNameGetConstants.FIND_AND_CONTAINS,
+		deleteFileFolderByFolderPath(folderPath, fileKeyName, MyFileComUtils.FileNameGetConstants.FIND_AND_CONTAINS,
 				fileFolderType);
 	}
 
@@ -117,7 +116,7 @@ public class FileOperation {
 	 */
 	public static void deleteFileByFolderPath(String folderPath, String fileKeyName, int fileNameChangeType) {
 		deleteFileFolderByFolderPath(folderPath, fileKeyName, fileNameChangeType,
-				MyFileUtils.FileFolderTypeConstants.IS_FILE_ALL);
+				MyFileComUtils.FileFolderTypeConstants.IS_FILE_ALL);
 	}
 
 	/**
@@ -125,7 +124,7 @@ public class FileOperation {
 	 */
 	public static void deleteFolderByFolderPath(String folderPath, String fileKeyName, int fileNameChangeType) {
 		deleteFileFolderByFolderPath(folderPath, fileKeyName, fileNameChangeType,
-				MyFileUtils.FileFolderTypeConstants.IS_FOLDER_ALL);
+				MyFileComUtils.FileFolderTypeConstants.IS_FOLDER_ALL);
 	}
 
 	/**
@@ -143,16 +142,16 @@ public class FileOperation {
 		File file = new File(folderPath);
 		if (file.exists() && file.isFile()) {
 			switch (fileFolderType) {
-			case MyFileUtils.FileFolderTypeConstants.IS_FILE:
+			case MyFileComUtils.FileFolderTypeConstants.IS_FILE:
 				deleteFileByFolderPath(file, fileKeyName, fileNameChangeType, false);
 				break;
-			case MyFileUtils.FileFolderTypeConstants.IS_FILE_ALL:
+			case MyFileComUtils.FileFolderTypeConstants.IS_FILE_ALL:
 				deleteFileByFolderPath(file, fileKeyName, fileNameChangeType, true);
 				break;
-			case MyFileUtils.FileFolderTypeConstants.IS_FOLDER:
+			case MyFileComUtils.FileFolderTypeConstants.IS_FOLDER:
 				deleteFolderByFolderPath(file, fileKeyName, fileNameChangeType, false);
 				break;
-			case MyFileUtils.FileFolderTypeConstants.IS_FOLDER_ALL:
+			case MyFileComUtils.FileFolderTypeConstants.IS_FOLDER_ALL:
 				deleteFolderByFolderPath(file, fileKeyName, fileNameChangeType, true);
 				break;
 			default:
@@ -170,7 +169,7 @@ public class FileOperation {
 				deleteFileByFolderPath(subFile, fileKeyName, fileNameChangeType, isAll);
 			} else {
 				if (isHasKeyName(subFile.getName(), fileKeyName, fileNameChangeType)) {
-					System.out.println(subFile.getName() + "--正在删除");
+					log.info(subFile.getName() + "--正在删除");
 					subFile.delete();
 				}
 			}
@@ -184,7 +183,7 @@ public class FileOperation {
 		for (File subFile : file.listFiles()) {
 			if (subFile.isDirectory()) {
 				if (isHasKeyName(subFile.getName(), fileKeyName, fileNameChangeType)) {
-					System.out.println(subFile.getName() + "--正在删除");
+					log.info(subFile.getName() + "--正在删除");
 					subFile.delete();
 				} else if (isAll) {
 					deleteFileByFolderPath(subFile, fileKeyName, fileNameChangeType, isAll);
@@ -221,7 +220,7 @@ public class FileOperation {
 				}
 			}
 			if (folder.list().length == 0) {
-				System.out.println(folder.getAbsolutePath() + "删除成功");
+				log.info(folder.getAbsolutePath() + "删除成功");
 				folder.delete();
 			}
 		}
@@ -237,7 +236,7 @@ public class FileOperation {
 	public static void removeAllFileToNewFolder(String oldFileFolderPath, String newfolderPath) {
 		removeToNewPlaceByFileName(oldFileFolderPath, newfolderPath, null, 11, true);
 		deleteEmptyFolderByFolderPath(oldFileFolderPath);
-		System.out.println("全部移动成功");
+		log.info("全部移动成功");
 	}
 
 	/**
@@ -261,11 +260,8 @@ public class FileOperation {
 				if (f.isDirectory() && isAll) {
 					removeToNewPlaceByFileName(f.getAbsolutePath(), newfolderPath, fileKeyName, moveType, isAll);
 				} else {
-					String subffix = f.getName().substring(f.getName().lastIndexOf("."));
+					String subffix = f.getName().substring(f.getName().lastIndexOf('.'));
 					String newName = newfolderPath + File.separator + System.currentTimeMillis() + subffix;
-//					String newName=
-//					newfolderPath + File.separator + System.currentTimeMillis()  +FileNameUtils.getFileSuffix(f.getName());
-//					String newName=newfolderPath + File.separator + path.getName() + "-" + f.getName();
 					f.renameTo(new File(newName));
 				}
 			}
@@ -286,17 +282,17 @@ public class FileOperation {
 			String oldName) {
 		String newName = "";
 		switch (fileNameChangeType) {
-		case MyFileUtils.FileNameGetConstants.FIND_FROM_START:
+		case MyFileComUtils.FileNameGetConstants.FIND_FROM_START:
 			if (oldName.startsWith(orginStr)) {
 				newName = oldName.replaceFirst(orginStr, replaceStr);
 			}
 			break;
-		case MyFileUtils.FileNameGetConstants.FIND_FROM_END:
+		case MyFileComUtils.FileNameGetConstants.FIND_FROM_END:
 			if (oldName.endsWith(orginStr)) {
 				newName = oldName.substring(0, oldName.length() - orginStr.length() - 1) + replaceStr;
 			}
 			break;
-		case MyFileUtils.FileNameGetConstants.FIND_AND_ONLY:
+		case MyFileComUtils.FileNameGetConstants.FIND_AND_ONLY:
 			newName = replaceStr;
 			break;
 		default:
@@ -362,13 +358,13 @@ public class FileOperation {
 	 */
 	private static boolean isHasKeyName(String fileName, String fileKeyName, int fileNameChangeType) {
 		switch (fileNameChangeType) {
-		case MyFileUtils.FileNameGetConstants.FIND_AND_CONTAINS:
+		case MyFileComUtils.FileNameGetConstants.FIND_AND_CONTAINS:
 			return fileName.contains(fileKeyName);
-		case MyFileUtils.FileNameGetConstants.FIND_FROM_START:
+		case MyFileComUtils.FileNameGetConstants.FIND_FROM_START:
 			return fileName.startsWith(fileKeyName);
-		case MyFileUtils.FileNameGetConstants.FIND_FROM_END:
+		case MyFileComUtils.FileNameGetConstants.FIND_FROM_END:
 			return fileName.startsWith(fileKeyName);
-		case MyFileUtils.FileNameGetConstants.FIND_AND_ONLY:
+		case MyFileComUtils.FileNameGetConstants.FIND_AND_ONLY:
 			return fileName.trim().equals(fileKeyName);
 		default:
 			return fileName.contains(fileKeyName);

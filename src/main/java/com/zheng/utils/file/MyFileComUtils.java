@@ -7,11 +7,10 @@ package com.zheng.utils.file;
  * @Package: com.zheng.utils.file
  * @author: zheng
  */
-public class MyFileUtils {
-
-
+public class MyFileComUtils {
+	private MyFileComUtils(){
+	}
 	
-
 
 	/**
 	 * 功能描述： 文件名的方式
@@ -33,11 +32,11 @@ public class MyFileUtils {
 		 */
 		public static final int FIND_AND_ONLY = 3;
 		/**
-		  * 查询含有的
+		 * 查询含有的
 		 */
 		public static final int FIND_AND_CONTAINS = 4;
 		/**
-		  * 全部文件
+		 * 全部文件
 		 */
 		public static final int JUST_ALL = 5;
 

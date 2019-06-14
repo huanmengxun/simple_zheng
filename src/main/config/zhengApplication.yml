@@ -1,3 +1,9 @@
+sytem:
+  username: ceshi
+  password: ceshi
+email:
+  from: 1@.com
+  to: 2@.com
 dataSource:
   master:
     dataType: mysql
@@ -6,7 +12,6 @@ dataSource:
     dbName: javatest
     username: root
     password: huan
-    
 mylogger:
   console:
     level: debug
